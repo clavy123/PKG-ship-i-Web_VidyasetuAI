@@ -2,21 +2,21 @@ import React from 'react';
 
 export const HeroSection = () => {
   return (
-    <main className="relative w-full border-0 border border-solid bg-black bg-opacity-0 h-[600px] max-sm:h-auto max-sm:min-h-[500px]">
-      <div className="absolute top-0 left-0 w-full border-0 border border-solid h-[600px]" />
-      <div className="absolute left-2/4 w-full border-0 border border-solid -translate-x-2/4 bg-black bg-opacity-0 h-[500px] max-w-[709px] top-[50px] max-md:px-5 max-md:py-0 max-md:max-w-[90%] max-sm:static max-sm:px-5 max-sm:py-10 max-sm:h-auto">
-        <div className="relative w-full border-0 border border-solid bg-black bg-opacity-0 h-[244px] max-sm:h-auto">
+    <main className="relative w-full border-0 border-solid bg-black bg-opacity-0 h-[600px] max-sm:h-auto max-sm:min-h-[500px]">
+      <div className="absolute top-0 left-0 w-full border-0 border-solid h-[600px]" />
+      <div className="absolute left-2/4 w-full border-0 border-solid -translate-x-2/4 bg-black bg-opacity-0 h-[500px] max-w-[709px] top-[50px] max-md:px-5 max-md:py-0 max-md:max-w-[90%] max-sm:static max-sm:px-5 max-sm:py-10 max-sm:h-auto">
+        <div className="relative w-full border-0 border-solid bg-black bg-opacity-0 h-[244px] max-sm:h-auto">
           <h1 className="absolute left-2/4 text-7xl text-center bg-clip-text -translate-x-2/4 h-[91px] leading-[72px] top-[-29px] w-[431px] max-md:w-full max-md:text-5xl max-md:leading-10 max-sm:static max-sm:mb-5 max-sm:text-4xl max-sm:leading-9 text-white">
             LEVEL UP
           </h1>
           <h2 className="absolute left-2/4 text-5xl leading-10 text-center text-white -translate-x-2/4 h-[59px] top-[73px] w-[539px] max-md:w-full max-md:text-3xl max-md:leading-8 max-sm:static max-sm:mb-5 max-sm:text-2xl max-sm:leading-6">
             Your Learning Game
           </h2>
-          <p className="absolute left-2/4 text-xl leading-7 text-center text-gray-300 -translate-x-2/4 h-[84px] top-[155px] w-[595px] max-md:w-full max-md:text-lg max-sm:static max-sm:mb-10 max-sm:text-base max-sm:leading-6">
+          <p className="absolute left-2/4 text-xl leading-7 text-center text-gray-300 -translate-x-2/4 top-[155px] w-[595px] max-md:w-full max-md:text-lg max-sm:static max-sm:mb-10 max-sm:text-base max-sm:leading-6">
             Transform any YouTube video into an epic quiz adventure. Challenge yourself, earn badges, and become the ultimate knowledge champion!
           </p>
         </div>
-        <button className="inline-flex absolute left-2/4 gap-3 items-center pt-3.5 pr-14 pb-5 pl-12 rounded-full border-0 border border-solid shadow-sm -translate-x-2/4 cursor-pointer top-[439px] max-sm:static max-sm:mx-auto max-sm:my-0 max-sm:w-full max-sm:max-w-[280px] bg-white text-black">
+        <button className="inline-flex absolute left-2/4 gap-3 items-center pt-3.5 pr-14 pb-5 pl-12 rounded-full border-0 border-solid shadow-sm -translate-x-2/4 cursor-pointer top-[439px] max-sm:static max-sm:mx-auto max-sm:my-0 max-sm:w-full max-sm:max-w-[280px] bg-white text-black">
           <div
             dangerouslySetInnerHTML={{
               __html: `<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20.513px; height: 20.513px">
