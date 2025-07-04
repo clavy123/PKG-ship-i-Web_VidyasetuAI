@@ -25,7 +25,7 @@ export const StatsSection = () => {
           <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10c1.8 0 3.5-.5 5-1.5V10H10V8h7c0-5.5-4.5-10-10-10z" />
         </svg>
         <span className="bg-gradient-to-r from-slate-50 via-gray-100 to-slate-200 bg-clip-text text-transparent">
-          START YOUR QUEST
+          START WITH MULTI PLAYER
         </span>
       </button>
 
