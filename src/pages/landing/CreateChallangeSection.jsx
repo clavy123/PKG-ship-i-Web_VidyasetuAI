@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 export const CreateChallengeSection = () => {
   const [selectedMode, setSelectedMode] = useState("multiple-choice");
+  const [activeTab, setActiveTab] = useState("youtube");
 
   const challengeModes = [
     {
@@ -51,122 +52,217 @@ export const CreateChallengeSection = () => {
     },
   ];
 
+  const tabs = [
+    { id: "youtube", label: "YouTube Video" },
+    { id: "prompt", label: "Prompt" },
+    { id: "context", label: "Context" },
+    { id: "pdf", label: "Upload PDF" },
+  ];
+
+  // Helper for input rendering
+  const renderTabInput = () => {
+    if (activeTab === "pdf") {
+      return (
+        <div className="relative border-0 border-solid bg-black bg-opacity-0 w-full">
+          <input
+            type="file"
+            accept="application/pdf"
+            className="inline-flex items-center py-0 pl-4 bg-gray-900 rounded-lg border-2 border-indigo-500 border-solid pr-16 w-full text-base leading-6 text-gray-400"
+          />
+        </div>
+      );
+    }
+    return (
+      <div className="relative border-0 border-solid bg-black bg-opacity-0 w-full">
+        <input
+          type={activeTab === "youtube" ? "url" : "text"}
+          placeholder={
+            activeTab === "youtube"
+              ? "https://www.youtube.com/watch?v=..."
+              : activeTab === "prompt"
+              ? "Enter your prompt..."
+              : "Enter context..."
+          }
+          className="inline-flex items-center py-0 pl-4 bg-gray-900 rounded-lg border-2 border-indigo-500 border-solid pr-16 w-full text-base leading-6 text-gray-400"
+        />
+        <div
+          className="absolute right-5 top-1/2 transform -translate-y-1/2"
+          dangerouslySetInnerHTML={{
+            __html: `<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 16px">
+              <g clip-path="url(#clip0_7_144)">
+                <path d="M18.1187 8.36559C19.8843 6.59997 19.8843 3.74059 18.1187 1.97497C16.5562 0.412466 14.0937 0.209341 12.2969 1.49372L12.2469 1.52809C11.7969 1.84997 11.6937 2.47497 12.0156 2.92184C12.3375 3.36872 12.9625 3.47497 13.4094 3.15309L13.4594 3.11872C14.4625 2.40309 15.8344 2.51559 16.7031 3.38747C17.6875 4.37184 17.6875 5.96559 16.7031 6.94997L13.1968 10.4625C12.2125 11.4468 10.6187 11.4468 9.63435 10.4625C8.76248 9.59059 8.64998 8.21872 9.3656 7.21872L9.39997 7.16872C9.72185 6.71872 9.6156 6.09372 9.16873 5.77497C8.72185 5.45622 8.09373 5.55934 7.77498 6.00622L7.7406 6.05622C6.4531 7.84997 6.65623 10.3125 8.21873 11.875C9.98435 13.6406 12.8437 13.6406 14.6094 11.875L18.1187 8.36559ZM1.88123 7.63434C0.115601 9.39997 0.115601 12.2593 1.88123 14.025C3.44373 15.5875 5.90623 15.7906 7.7031 14.5062L7.7531 14.4718C8.2031 14.15 8.30623 13.525 7.98435 13.0781C7.66248 12.6312 7.03748 12.525 6.5906 12.8468L6.5406 12.8812C5.53748 13.5968 4.1656 13.4843 3.29685 12.6125C2.31248 11.625 2.31248 10.0312 3.29685 9.04684L6.8031 5.53747C7.78748 4.55309 9.38123 4.55309 10.3656 5.53747C11.2375 6.40934 11.35 7.78122 10.6343 8.78434L10.6 8.83434C10.2781 9.28434 10.3844 9.90934 10.8312 10.2281C11.2781 10.5468 11.9062 10.4437 12.225 9.99684L12.2593 9.94684C13.5469 8.14997 13.3437 5.68747 11.7812 4.12497C10.0156 2.35934 7.15623 2.35934 5.3906 4.12497L1.88123 7.63434Z" fill="#667EEA"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_7_144">
+                  <path d="M0 0H20V16H0V0Z" fill="white"/>
+                </clipPath>
+              </defs>
+            </svg>`,
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
-    <section className="flex justify-center items-center px-72 py-20 w-full border-0 border border-solid bg-black bg-opacity-0 h-[772px] max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16 max-sm:h-auto">
-      <div className="flex flex-col gap-12 justify-center items-start border-0 border border-solid bg-black bg-opacity-0 h-[612px] w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8 max-sm:h-auto">
-        <div className="border-0 border border-solid bg-black bg-opacity-0 h-[84px] w-[896px] max-md:w-full max-sm:h-auto">
-          <h2 className="mx-auto my-0 -mt-2 text-4xl leading-10 text-center bg-clip-text h-[45px] w-[572px] max-md:w-full max-md:text-3xl max-sm:text-2xl max-sm:leading-7 text-white">
+    <section className="flex justify-center items-center px-72 py-20 w-full border-0 border-solid bg-black bg-opacity-0 max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16">
+      <div className="flex flex-col gap-12 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8">
+        <div className="border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full">
+          <h2 className="mx-auto my-0 -mt-2 text-4xl leading-10 text-center bg-clip-text w-[572px] max-md:w-full max-md:text-3xl max-sm:text-2xl max-sm:leading-7 text-white">
             CREATE YOUR CHALLENGE
           </h2>
-          <p className="mx-auto my-0 mt-14 h-7 text-xl leading-7 text-center text-gray-300 w-[686px] max-md:w-full max-md:text-lg max-sm:mt-5 max-sm:text-base max-sm:leading-6">
+          <p className="mx-auto my-0 mt-14 text-xl leading-7 text-center text-gray-300 w-[686px] max-md:w-full max-md:text-lg max-sm:mt-5 max-sm:text-base max-sm:leading-6">
             Drop a YouTube link and let AI craft your personalized quiz
             adventure
           </p>
         </div>
-        <div className="flex justify-center items-center p-8 rounded-2xl border-0 border border-solid shadow-sm h-[480px] w-[896px] max-md:w-full max-sm:p-6 max-sm:h-auto bg-gray-900">
-          <div className="flex flex-col gap-8 justify-center items-start border-0 border border-solid bg-black bg-opacity-0 h-[416px] w-[832px] max-md:w-full max-sm:gap-6 max-sm:h-auto">
-            <div className="flex flex-col gap-3 justify-center items-start border-0 border border-solid bg-black bg-opacity-0 w-[832px] max-md:w-full max-sm:h-auto">
-              <label className="flex gap-2 items-center h-7 border-0 border border-solid bg-black bg-opacity-0">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: `<svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20.25px; height: 18px">
-                      <path d="M20.25 18.25H0V0.25H20.25V18.25Z" stroke="#E5E7EB"/>
-                      <path d="M19.3238 4.61229C19.103 3.78085 18.4524 3.12603 17.6263 2.9038C16.129 2.5 10.125 2.5 10.125 2.5C10.125 2.5 4.12102 2.5 2.62368 2.9038C1.79761 3.12606 1.14701 3.78085 0.926197 4.61229C0.524994 6.11934 0.524994 9.26364 0.524994 9.26364C0.524994 9.26364 0.524994 12.4079 0.926197 13.915C1.14701 14.7464 1.79761 15.374 2.62368 15.5962C4.12102 16 10.125 16 10.125 16C10.125 16 16.129 16 17.6263 15.5962C18.4524 15.374 19.103 14.7464 19.3238 13.915C19.725 12.4079 19.725 9.26364 19.725 9.26364C19.725 9.26364 19.725 6.11934 19.3238 4.61229ZM8.16135 12.1184V6.40885L13.1795 9.26371L8.16135 12.1184Z" fill="#39FF14"/>
-                    </svg>`,
-                  }}
-                />
-                <span className="text-lg font-bold text-lime-500">
-                  YouTube Video Link
-                </span>
-              </label>
-              <div className="relative border-0 border border-solid bg-black bg-opacity-0 h-[60px] w-[832px] max-md:w-full">
-                <input
-                  type="url"
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  className="inline-flex items-center py-0 pl-4 bg-gray-900 rounded-lg border-2 border-indigo-500 border-solid h-[60px] pr-[511px] w-[832px] max-md:py-0 max-md:pr-16 max-md:pl-4 max-md:w-full text-base leading-6 text-gray-400"
-                />
-                <div
-                  className="absolute right-5 top-1/2 transform -translate-y-1/2"
-                  dangerouslySetInnerHTML={{
-                    __html: `<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 16px">
-                      <g clip-path="url(#clip0_7_144)">
-                        <path d="M18.1187 8.36559C19.8843 6.59997 19.8843 3.74059 18.1187 1.97497C16.5562 0.412466 14.0937 0.209341 12.2969 1.49372L12.2469 1.52809C11.7969 1.84997 11.6937 2.47497 12.0156 2.92184C12.3375 3.36872 12.9625 3.47497 13.4094 3.15309L13.4594 3.11872C14.4625 2.40309 15.8344 2.51559 16.7031 3.38747C17.6875 4.37184 17.6875 5.96559 16.7031 6.94997L13.1968 10.4625C12.2125 11.4468 10.6187 11.4468 9.63435 10.4625C8.76248 9.59059 8.64998 8.21872 9.3656 7.21872L9.39997 7.16872C9.72185 6.71872 9.6156 6.09372 9.16873 5.77497C8.72185 5.45622 8.09373 5.55934 7.77498 6.00622L7.7406 6.05622C6.4531 7.84997 6.65623 10.3125 8.21873 11.875C9.98435 13.6406 12.8437 13.6406 14.6094 11.875L18.1187 8.36559ZM1.88123 7.63434C0.115601 9.39997 0.115601 12.2593 1.88123 14.025C3.44373 15.5875 5.90623 15.7906 7.7031 14.5062L7.7531 14.4718C8.2031 14.15 8.30623 13.525 7.98435 13.0781C7.66248 12.6312 7.03748 12.525 6.5906 12.8468L6.5406 12.8812C5.53748 13.5968 4.1656 13.4843 3.29685 12.6125C2.31248 11.625 2.31248 10.0312 3.29685 9.04684L6.8031 5.53747C7.78748 4.55309 9.38123 4.55309 10.3656 5.53747C11.2375 6.40934 11.35 7.78122 10.6343 8.78434L10.6 8.83434C10.2781 9.28434 10.3844 9.90934 10.8312 10.2281C11.2781 10.5468 11.9062 10.4437 12.225 9.99684L12.2593 9.94684C13.5469 8.14997 13.3437 5.68747 11.7812 4.12497C10.0156 2.35934 7.15623 2.35934 5.3906 4.12497L1.88123 7.63434Z" fill="#667EEA"/>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_7_144">
-                          <path d="M0 0H20V16H0V0Z" fill="white"/>
-                        </clipPath>
-                      </defs>
-                    </svg>`,
-                  }}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-4 justify-center items-start border-0 border border-solid bg-black bg-opacity-0 h-[168px] w-[832px] max-md:w-full max-sm:h-auto">
-              <label className="flex gap-2 items-center h-7 border-0 border border-solid bg-black bg-opacity-0">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: `<svg width="23" height="19" viewBox="0 0 23 19" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 22.5px; height: 18px">
-                      <g clip-path="url(#clip0_7_147)">
-                        <path d="M6.75 2.5C3.02344 2.5 0 5.52344 0 9.25C0 12.9766 3.02344 16 6.75 16H15.75C19.4766 16 22.5 12.9766 22.5 9.25C22.5 5.52344 19.4766 2.5 15.75 2.5H6.75ZM17.4375 6.15625C17.8105 6.15625 18.1681 6.30441 18.4319 6.56813C18.6956 6.83185 18.8438 7.18954 18.8438 7.5625C18.8438 7.93546 18.6956 8.29315 18.4319 8.55687C18.1681 8.82059 17.8105 8.96875 17.4375 8.96875C17.0645 8.96875 16.7069 8.82059 16.4431 8.55687C16.1794 8.29315 16.0312 7.93546 16.0312 7.5625C16.0312 7.18954 16.1794 6.83185 16.4431 6.56813C16.7069 6.30441 17.0645 6.15625 17.4375 6.15625ZM13.7812 10.9375C13.7812 10.5645 13.9294 10.2069 14.1931 9.94313C14.4569 9.67941 14.8145 9.53125 15.1875 9.53125C15.5605 9.53125 15.9181 9.67941 16.1819 9.94313C16.4456 10.2069 16.5938 10.5645 16.5938 10.9375C16.5938 11.3105 16.4456 11.6681 16.1819 11.9319C15.9181 12.1956 15.5605 12.3438 15.1875 12.3438C14.8145 12.3438 14.4569 12.1956 14.1931 11.9319C13.9294 11.6681 13.7812 11.3105 13.7812 10.9375ZM5.90625 7.28125C5.90625 6.81367 6.28242 6.4375 6.75 6.4375C7.21758 6.4375 7.59375 6.81367 7.59375 7.28125V8.40625H8.71875C9.18633 8.40625 9.5625 8.78242 9.5625 9.25C9.5625 9.71758 9.18633 10.0938 8.71875 10.0938H7.59375V11.2188C7.59375 11.6863 7.21758 12.0625 6.75 12.0625C6.28242 12.0625 5.90625 11.6863 5.90625 11.2188V10.0938H4.78125C4.31367 10.0938 3.9375 9.71758 3.9375 9.25C3.9375 8.78242 4.31367 8.40625 4.78125 8.40625H5.90625V7.28125Z" fill="#39FF14"/>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_7_147">
-                          <path d="M0 0.25H22.5V18.25H0V0.25Z" fill="white"/>
-                        </clipPath>
-                      </defs>
-                    </svg>`,
-                  }}
-                />
-                <span className="text-lg font-bold text-lime-500">
-                  Choose Your Challenge Mode
-                </span>
-              </label>
-              <div className="flex gap-4 justify-center items-start border-0 border border-solid bg-black bg-opacity-0 h-[124px] w-[832px] max-md:flex-col max-md:gap-3 max-md:w-full max-md:h-auto max-sm:h-auto">
-                {challengeModes.map((mode) => {
-                  const isSelected = selectedMode === mode.id;
-                  return (
-                    <div
-                      className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 ${
-                        isSelected ? "border-indigo-500" : "border-gray-600"
-                      } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full`}
-                      onClick={() => setSelectedMode(mode.id)}
-                      key={mode.id}
+
+        {/* Main Wrapper Box for Tabs + Inputs + Challenge Mode */}
+        <div className="w-full flex justify-center">
+          <div className="bg-gray-900 rounded-2xl shadow-lg border border-gray-700 px-0 py-0 w-fit flex flex-col items-center min-w-[832px] max-md:min-w-0 max-md:w-full">
+            {/* Tabs */}
+            <div className="w-full flex justify-center pt-6">
+              <div className="bg-gray-800 rounded-xl shadow border border-gray-700 px-4 py-3 w-fit flex">
+                <div className="flex gap-4">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+                        activeTab === tab.id
+                          ? "bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white"
+                          : "bg-gray-900 text-gray-300"
+                      }`}
+                      onClick={() => setActiveTab(tab.id)}
                     >
-                      <div className="relative border-0 border border-solid bg-black bg-opacity-0 h-[88px] w-[231px]">
-                        <div dangerouslySetInnerHTML={{ __html: mode.icon }} />
-                        <h4 className="absolute left-2/4 text-base font-bold leading-6 text-center text-white whitespace-nowrap -translate-x-2/4 top-[33px]">
-                          {mode.title}
-                        </h4>
-                        <p className="absolute left-2/4 text-sm leading-5 text-center text-gray-400 whitespace-nowrap -translate-x-2/4 top-[66px]">
-                          {mode.description}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="flex justify-center items-center border-0 border border-solid bg-black bg-opacity-0 h-[84px] w-[832px] max-md:w-full max-sm:h-auto">
-              <button className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border border-solid shadow-sm cursor-pointer h-[63px] w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: `<svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20.941px; height: 20.941px">
-                      <g clip-path="url(#clip0_7_155)">
-                        <path d="M1.05525 18.9551C0.290421 18.1902 0.290421 16.9469 1.05525 16.1779L16.6504 0.582778C17.4152 -0.182052 18.6586 -0.182052 19.4275 0.582778L20.8427 1.99792C21.6075 2.76275 21.6075 4.00611 20.8427 4.77503L5.24341 20.3702C4.47858 21.135 3.23522 21.135 2.4663 20.3702L1.05525 18.9551ZM14.6954 7.67893L18.9899 3.38443L18.041 2.43146L13.7465 6.72596L14.6995 7.67893H14.6954Z" fill="#0F0F23"/>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_7_155">
-                          <path d="M0.478577 0.00610352H21.4194V20.9469H0.478577V0.00610352Z" fill="white"/>
-                        </clipPath>
-                      </defs>
-                    </svg>`,
-                  }}
-                />
-                <span className="text-xl font-bold text-center bg-clip-text">
-                  GENERATE QUIZ
-                </span>
-              </button>
+
+            {/* Inputs and Challenge Mode */}
+            <div className="flex flex-col gap-8 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full px-8 py-8 max-md:px-4 max-md:py-6">
+              {/* Tab Content */}
+              {activeTab === "youtube" && (
+                <div className="flex flex-col gap-3 justify-center items-start w-full">
+                  <label className="flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: `<svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20.25px; height: 18px">
+                          <path d="M20.25 18.25H0V0.25H20.25V18.25Z" stroke="#E5E7EB"/>
+                          <path d="M19.3238 4.61229C19.103 3.78085 18.4524 3.12603 17.6263 2.9038C16.129 2.5 10.125 2.5 10.125 2.5C10.125 2.5 4.12102 2.5 2.62368 2.9038C1.79761 3.12606 1.14701 3.78085 0.926197 4.61229C0.524994 6.11934 0.524994 9.26364 0.524994 9.26364C0.524994 9.26364 0.524994 12.4079 0.926197 13.915C1.14701 14.7464 1.79761 15.374 2.62368 15.5962C4.12102 16 10.125 16 10.125 16C10.125 16 16.129 16 17.6263 15.5962C18.4524 15.374 19.103 14.7464 19.3238 13.915C19.725 12.4079 19.725 9.26364 19.725 9.26364C19.725 9.26364 19.725 6.11934 19.3238 4.61229ZM8.16135 12.1184V6.40885L13.1795 9.26371L8.16135 12.1184Z" fill="#39FF14"/>
+                        </svg>`,
+                      }}
+                    />
+                    <span className="text-lg font-bold text-lime-500">
+                      YouTube Video Link
+                    </span>
+                  </label>
+                  {renderTabInput()}
+                </div>
+              )}
+              {activeTab === "prompt" && (
+                <div className="flex flex-col gap-3 justify-center items-start w-full">
+                  <label className="flex gap-2 items-center">
+                    <span className="text-lg font-bold text-lime-500">
+                      Prompt
+                    </span>
+                  </label>
+                  {renderTabInput()}
+                </div>
+              )}
+              {activeTab === "context" && (
+                <div className="flex flex-col gap-3 justify-center items-start w-full">
+                  <label className="flex gap-2 items-center">
+                    <span className="text-lg font-bold text-lime-500">
+                      Context
+                    </span>
+                  </label>
+                  {renderTabInput()}
+                </div>
+              )}
+              {activeTab === "pdf" && (
+                <div className="flex flex-col gap-3 justify-center items-start w-full">
+                  <label className="flex gap-2 items-center">
+                    <span className="text-lg font-bold text-lime-500">
+                      Upload PDF
+                    </span>
+                  </label>
+                  {renderTabInput()}
+                </div>
+              )}
+
+              {/* Challenge Mode Section (common for all tabs) */}
+              <div className="flex flex-col gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full">
+                <label className="flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0">
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: `<svg width="23" height="19" viewBox="0 0 23 19" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 22.5px; height: 18px">
+                        <g clip-path="url(#clip0_7_147)">
+                          <path d="M6.75 2.5C3.02344 2.5 0 5.52344 0 9.25C0 12.9766 3.02344 16 6.75 16H15.75C19.4766 16 22.5 12.9766 22.5 9.25C22.5 5.52344 19.4766 2.5 15.75 2.5H6.75ZM17.4375 6.15625C17.8105 6.15625 18.1681 6.30441 18.4319 6.56813C18.6956 6.83185 18.8438 7.18954 18.8438 7.5625C18.8438 7.93546 18.6956 8.29315 18.4319 8.55687C18.1681 8.82059 17.8105 8.96875 17.4375 8.96875C17.0645 8.96875 16.7069 8.82059 16.4431 8.55687C16.1794 8.29315 16.0312 7.93546 16.0312 7.5625C16.0312 7.18954 16.1794 6.83185 16.4431 6.56813C16.7069 6.30441 17.0645 6.15625 17.4375 6.15625ZM13.7812 10.9375C13.7812 10.5645 13.9294 10.2069 14.1931 9.94313C14.4569 9.67941 14.8145 9.53125 15.1875 9.53125C15.5605 9.53125 15.9181 9.67941 16.1819 9.94313C16.4456 10.2069 16.5938 10.5645 16.5938 10.9375C16.5938 11.3105 16.4456 11.6681 16.1819 11.9319C15.9181 12.1956 15.5605 12.3438 15.1875 12.3438C14.8145 12.3438 14.4569 12.1956 14.1931 11.9319C13.9294 11.6681 13.7812 11.3105 13.7812 10.9375ZM5.90625 7.28125C5.90625 6.81367 6.28242 6.4375 6.75 6.4375C7.21758 6.4375 7.59375 6.81367 7.59375 7.28125V8.40625H8.71875C9.18633 8.40625 9.5625 8.78242 9.5625 9.25C9.5625 9.71758 9.18633 10.0938 8.71875 10.0938H7.59375V11.2188C7.59375 11.6863 7.21758 12.0625 6.75 12.0625C6.28242 12.0625 5.90625 11.6863 5.90625 11.2188V10.0938H4.78125C4.31367 10.0938 3.9375 9.71758 3.9375 9.25C3.9375 8.78242 4.31367 8.40625 4.78125 8.40625H5.90625V7.28125Z" fill="#39FF14"/>
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_7_147">
+                            <path d="M0 0.25H22.5V18.25H0V0.25Z" fill="white"/>
+                          </clipPath>
+                        </defs>
+                      </svg>`,
+                    }}
+                  />
+                  <span className="text-lg font-bold text-lime-500">
+                    Choose Your Challenge Mode
+                  </span>
+                </label>
+                <div className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full max-md:flex-col max-md:gap-3">
+                  {challengeModes.map((mode) => {
+                    const isSelected = selectedMode === mode.id;
+                    return (
+                      <div
+                        className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 ${
+                          isSelected ? "border-indigo-500" : "border-gray-600"
+                        } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full`}
+                        onClick={() => setSelectedMode(mode.id)}
+                      >
+                        <div className="relative border-0 border-solid bg-black bg-opacity-0 h-[88px] w-[231px]">
+                          <div
+                            dangerouslySetInnerHTML={{ __html: mode.icon }}
+                          />
+                          <h4 className="absolute left-2/4 text-base font-bold leading-6 text-center text-white whitespace-nowrap -translate-x-2/4 top-[33px]">
+                            {mode.title}
+                          </h4>
+                          <p className="absolute left-2/4 text-sm leading-5 text-center text-gray-400 whitespace-nowrap -translate-x-2/4 top-[66px]">
+                            {mode.description}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Generate Quiz Button */}
+              <div className="flex justify-center items-center border-0 border-solid bg-black bg-opacity-0 w-full">
+                <button className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black">
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: `<svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20.941px; height: 20.941px">
+                        <g clip-path="url(#clip0_7_155)">
+                          <path d="M1.05525 18.9551C0.290421 18.1902 0.290421 16.9469 1.05525 16.1779L16.6504 0.582778C17.4152 -0.182052 18.6586 -0.182052 19.4275 0.582778L20.8427 1.99792C21.6075 2.76275 21.6075 4.00611 20.8427 4.77503L5.24341 20.3702C4.47858 21.135 3.23522 21.135 2.4663 20.3702L1.05525 18.9551ZM14.6954 7.67893L18.9899 3.38443L18.041 2.43146L13.7465 6.72596L14.6995 7.67893H14.6954Z" fill="#0F0F23"/>
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_7_155">
+                            <path d="M0.478577 0.00610352H21.4194V20.9469H0.478577V0.00610352Z" fill="white"/>
+                          </clipPath>
+                        </defs>
+                      </svg>`,
+                    }}
+                  />
+                  <span className="text-xl font-bold text-center bg-clip-text">
+                    GENERATE QUIZ
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
