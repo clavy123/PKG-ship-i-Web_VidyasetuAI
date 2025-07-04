@@ -1,6 +1,6 @@
 import React from "react";
 import { ICONS } from "../assets/icons";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export const Header = () => {
   const navigate = useNavigate();
