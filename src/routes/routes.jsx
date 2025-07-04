@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import LoginPage from "../pages/auth/Login";
 import SignupPage from "../pages/auth/Signup";
-import HomePage from "../pages/home";
+import HomePage from "../pages/home/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import DefaultLayout from "../layouts/DefaultLayout";
 import LandingPage from "../pages/user/Landing";
@@ -32,7 +32,7 @@ export const COMMON_ROUTES = [
       {
         name: "RootPage",
         path: "",
-        element: !isAuthenticated() ? <LandingPage /> : <HomePage />,
+        element: isAuthenticated() ? <LandingPage /> : <HomePage />,
       },
       // Add more child routes here
       {

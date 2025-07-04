@@ -1,53 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 function Mcqs() {
+  const { quizData } = useSelector((state) => state.quiz);
+  console.log("quizData-", quizData);
   const navigate = useNavigate();
 
-  const questions = [
-    {
-      question: "What is the main purpose of a design system?",
-      options: [
-        "To create beautiful mockups only",
-        "To maintain consistency across products",
-        "To slow down the design process",
-        "To make designers' jobs harder",
-      ],
-    },
-    {
-      question: "Which language runs in a web browser?",
-      options: ["Java", "C", "Python", "JavaScript"],
-    },
-    {
-      question: "What does CSS stand for?",
-      options: [
-        "Central Style Sheets",
-        "Cascading Style Sheets",
-        "Cascading Simple Sheets",
-        "Cars SUVs Sailboats",
-      ],
-    },
-  ];
-
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    // Load from localStorage if available
+    const saved = localStorage.getItem("quiz_selected_options");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [showResults, setShowResults] = useState(false);
 
+  useEffect(() => {
+    localStorage.setItem(
+      "quiz_selected_options",
+      JSON.stringify(selectedOptions)
+    );
+  }, [selectedOptions]);
+
   const handleOptionSelect = (index) => {
-    if (selectedOption === index) {
-      setSelectedOption(null); // Deselect if already selected
-    } else {
-      setSelectedOption(index); // Select new option
-    }
+    setSelectedOptions((prev) => {
+      const updated = [...prev];
+      updated[currentQuestion] =
+        updated[currentQuestion] === index ? null : index;
+      return updated;
+    });
   };
 
   const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < quizData?.questions?.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      setSelectedOption(null);
     } else {
-      // Navigate to ResultCard
       navigate("/result-card");
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
     }
   };
 
@@ -77,7 +71,9 @@ function Mcqs() {
         <div className="mb-2 text-sm text-gray-400 ">
           {showResults
             ? `Quiz Complete!`
-            : `Question ${currentQuestion + 1} of ${questions.length}`}
+            : `Question ${currentQuestion + 1} of ${
+                quizData?.questions?.length
+              }`}
         </div>
         <div className="w-full h-2 bg-gray-700 rounded-full mb-6">
           <div
@@ -85,7 +81,9 @@ function Mcqs() {
             style={{
               width: showResults
                 ? "100%"
-                : `${((currentQuestion + 1) / questions.length) * 100}%`,
+                : `${
+                    ((currentQuestion + 1) / quizData?.questions?.length) * 100
+                  }%`,
             }}
           ></div>
         </div>
@@ -95,38 +93,35 @@ function Mcqs() {
       <div className="flex justify-center w-full">
         <div className="bg-[#1C1D35] p-6 rounded-xl shadow-md mb-8 max-w-3xl w-full">
           <h2 className="text-lg font-bold mb-6">
-            {questions[currentQuestion].question}
+            {quizData?.questions?.[currentQuestion]?.question_text}
           </h2>
 
           <div className="flex flex-col gap-4">
-            {questions[currentQuestion].options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => handleOptionSelect(index)}
-                className={`flex items-center gap-4 px-4 py-3 rounded-lg border transition text-left
-                ${
-                  selectedOption === index
-                    ? "bg-[#6A5AE0]"
-                    : "bg-[#2B2D51] hover:bg-[#3a3d6f]"
-                }`}
-              >
-                <div className="w-6 h-6 rounded-full bg-[#1F203D] flex items-center justify-center text-xs font-bold">
-                  {String.fromCharCode(65 + index)}
-                </div>
-                <span className="text-sm">{option}</span>
-              </button>
-            ))}
+            {quizData?.questions?.[currentQuestion]?.options.map(
+              (option, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleOptionSelect(index)}
+                  className={`flex items-center gap-4 px-4 py-3 rounded-lg border transition text-left
+                  ${
+                    selectedOptions[currentQuestion] === index
+                      ? "bg-[#6A5AE0]"
+                      : "bg-[#2B2D51] hover:bg-[#3a3d6f]"
+                  }`}
+                >
+                  <div className="w-6 h-6 rounded-full bg-[#1F203D] flex items-center justify-center text-xs font-bold">
+                    {String.fromCharCode(65 + index)}
+                  </div>
+                  <span className="text-sm">{option}</span>
+                </button>
+              )
+            )}
           </div>
 
           <div className="mt-6 flex gap-4 w-full">
             <button
               className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg font-medium disabled:opacity-50"
-              onClick={() => {
-                if (currentQuestion > 0) {
-                  setCurrentQuestion(currentQuestion - 1);
-                  setSelectedOption(null);
-                }
-              }}
+              onClick={handlePrevious}
               disabled={currentQuestion === 0}
             >
               Previous
@@ -134,9 +129,9 @@ function Mcqs() {
             <button
               className="flex-1 bg-[#8C6EFF] hover:bg-[#7a5ce0] text-white py-2 rounded-lg font-medium disabled:opacity-50"
               onClick={handleNext}
-              disabled={selectedOption === null}
+              disabled={selectedOptions[currentQuestion] == null}
             >
-              {currentQuestion === questions.length - 1
+              {currentQuestion === quizData?.questions?.length - 1
                 ? "Finish Quiz"
                 : "Next Question"}
             </button>

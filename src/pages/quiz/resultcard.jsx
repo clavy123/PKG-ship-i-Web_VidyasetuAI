@@ -1,5 +1,5 @@
 import React from "react";
-
+ 
 const ResultCard = () => {
   const resultData = {
     user: "Prince Sen",
@@ -28,7 +28,7 @@ const ResultCard = () => {
       },
     ],
   };
-
+ 
   return (
     <div className="min-h-screen bg-[#0b1120] text-white p-8">
       <div className="max-w-5xl mx-auto">
@@ -37,7 +37,7 @@ const ResultCard = () => {
           Results for: <span className="text-white font-semibold">{resultData.user}</span> - 23 seconds ago
         </h2>
         <h1 className="text-3xl font-bold text-white mb-6">{resultData.quizTitle}</h1>
-
+ 
         {/* Summary */}
         <div className="flex flex-wrap items-center justify-between bg-[#121a2f] border border-gray-700 rounded-xl p-6 mb-10">
           <div>
@@ -55,7 +55,7 @@ const ResultCard = () => {
             <p className="text-gray-200">{resultData.completionTime} <span className="text-sm text-gray-400">{resultData.date}</span></p>
           </div>
         </div>
-
+ 
         {/* Question Block */}
         {resultData.questions.map((q, index) => (
           <div key={index} className="bg-[#121a2f] border border-gray-700 rounded-xl p-6 mb-6">
@@ -66,7 +66,7 @@ const ResultCard = () => {
               <div className="col-span-12 md:col-span-9 text-white">
                 {q.question}
               </div>
-
+ 
               <div className="col-span-12 md:col-span-3 text-gray-400 font-semibold">
                 Answer
               </div>
@@ -78,7 +78,7 @@ const ResultCard = () => {
                   </span>
                 )}
               </div>
-
+ 
               <div className="col-span-12 md:col-span-3 text-gray-400 font-semibold">
                 Correct Answer
               </div>
@@ -106,5 +106,5 @@ const ResultCard = () => {
     </div>
   );
 };
-
+ 
 export default ResultCard;

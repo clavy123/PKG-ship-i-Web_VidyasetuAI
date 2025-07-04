@@ -10,9 +10,15 @@ import { FormInput } from "../../components/FormInput";
 import { FormTextarea } from "../../components/FormTextarea";
 import { FileDropzone } from "../../components/FileDropzone";
 import { useNavigate } from "react-router";
+import { generateQuizFromVideo } from "../../store/slices/quiz.slice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import Loader from "../../components/Loader";
 
 export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { error, loading } = useSelector((state) => state.quiz);
   const {
     handleSubmit,
     control,
@@ -38,7 +44,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
 
   // Helper: map tab to sourceTypeId
   const tabToSourceTypeId = {
-    youtube: SourceType.pdf, // If you want YouTube to be 2, change this accordingly
+    youtube: SourceType.youtube, // If you want YouTube to be 2, change this accordingly
     context: SourceType.context,
     prompt: SourceType.prompt,
     pdf: SourceType.pdf,
@@ -131,22 +137,6 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         </defs>
       </svg>`,
       },
-      {
-        id: "open-text",
-        title: "Open Text",
-        description: "Free-form responses",
-        icon: `<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px; position: absolute; left: 50%; top: 2px; transform: translateX(-50%)">
-        <g clip-path="url(#clip0_7_186)">
-          <path d="M15.3281 30.75C19.3064 30.75 23.1217 29.1696 25.9347 26.3566C28.7478 23.5436 30.3281 19.7282 30.3281 15.75C30.3281 11.7718 28.7478 7.95644 25.9347 5.1434C23.1217 2.33035 19.3064 0.75 15.3281 0.75C11.3499 0.75 7.53457 2.33035 4.72152 5.1434C1.90848 7.95644 0.328125 11.7718 0.328125 15.75C0.328125 19.7282 1.90848 23.5436 4.72152 26.3566C7.53457 29.1696 11.3499 30.75 15.3281 30.75ZM21.9492 12L14.4492 19L13 17L8.71289 21L10.1621 22L12.4629 20L20.9629 12H21V12Z" fill="#39FF14"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_7_186">
-            <path d="M0.328125 0.75H30.3281V30.75H0.328125V0.75Z" fill="white"/>
-          </clipPath>
-        </defs>
-        </svg>
-        `,
-      },
     ],
     []
   );
@@ -228,19 +218,9 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
     );
   };
 
-  // Device token helper
-  const getDeviceToken = () => {
-    let token = localStorage.getItem("deviceToken");
-    if (!token) {
-      token = Math.floor(Math.random() * 1e12).toString();
-      localStorage.setItem("deviceToken", token);
-    }
-    return token;
-  };
-
   // Main submit handler
-  const onSubmit = (data) => {
-    const deviceId = getDeviceToken();
+  const onSubmit = async (data) => {
+    const deviceId = localStorage.getItem("deviceId");
     const questionsTypeId = challengeModeToTypeId[data.challengeMode];
     const difficultyTypeId = Number(data.difficulty);
     const languageId = Number(data.languageType);
@@ -276,9 +256,22 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         payload.prompt = data.prompt;
       }
 
-      console.log("JSON payload:", payload);
-      navigate("/mcqs");
-      // fetch("/api/quiz", { method: "POST", body: JSON.stringify(payload) });
+      // const resultAction = await dispatch(generateQuizFromVideo(payload));
+      // if (generateQuizFromVideo.fulfilled.match(resultAction)) {
+      //   toast.success("Quiz generated successfully!");
+      //   navigate("/mcqs");
+      //   localStorage.removeItem("quiz_selected_options")
+      //   localStorage.removeItem("quizData");
+      // } else if (resultAction.payload) {
+      //   toast.error(resultAction.payload);
+      // } else {
+      //   toast.error(error || "Quiz generation failed");
+      // }
+      setTimeout(() => {
+        localStorage.removeItem("quiz_selected_options");
+        localStorage.removeItem("quizData");
+        navigate("/mcqs");
+      }, 2000);
     }
   };
 
@@ -550,11 +543,17 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               <div className="flex justify-center items-center border-0 border-solid bg-black bg-opacity-0 w-full">
                 <button
                   type="submit"
+                  disabled={loading}
                   className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black"
                 >
                   <span className="text-xl font-bold text-center bg-clip-text">
                     GENERATE QUIZ
                   </span>
+                  {loading && (
+                    <span className="ml-2 flex items-center">
+                      <Loader />
+                    </span>
+                  )}
                 </button>
               </div>
             </div>

@@ -26,7 +26,6 @@ function Login() {
       password: data.password,
     };
     const resultAction = await dispatch(loginUser(payload));
-    console.log("action-", resultAction);
     if (loginUser.fulfilled.match(resultAction)) {
       toast.success("Login successful!");
       reset();

@@ -26,6 +26,8 @@ function Signup() {
       lastName: data.lastName,
       email: data.email,
       password: data.password,
+      mobile: data.mobile,
+      deviceId: localStorage.getItem("deviceId") || null,
     };
     const resultAction = await dispatch(signupUser(payload));
     if (signupUser.fulfilled.match(resultAction)) {
@@ -132,6 +134,40 @@ function Signup() {
               {errors.email && (
                 <span className="text-xs text-red-400">
                   {errors.email.message}
+                </span>
+              )}
+            </div>
+
+            {/* Mobile */}
+            <div className="mb-4">
+              <label className="block mb-1 text-sm text-gray-300">
+                Mobile <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                placeholder="Enter your mobile number"
+                className={`w-full px-3 py-2 rounded bg-[#1e293b] border ${
+                  errors.mobile ? "border-red-500" : "border-[#334155]"
+                } focus:outline-none focus:ring-2 focus:ring-[#38bdf8] text-sm`}
+                {...register("mobile", {
+                  required: "Mobile number is required",
+                  minLength: {
+                    value: 10,
+                    message: "Mobile number must be at least 10 digits",
+                  },
+                  maxLength: {
+                    value: 10,
+                    message: "Mobile number must be at most 10 digits",
+                  },
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: "Mobile number must contain only digits",
+                  },
+                })}
+              />
+              {errors.mobile && (
+                <span className="text-xs text-red-400">
+                  {errors.mobile.message}
                 </span>
               )}
             </div>
