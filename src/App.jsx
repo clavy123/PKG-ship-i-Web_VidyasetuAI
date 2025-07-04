@@ -1,15 +1,17 @@
-import './App.css'
-import Login from './pages/auth/Login'
-import Signup from './pages/auth/Signup'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
+import { router } from "./routes/routes";
+import { RouterProvider } from "react-router";
 
 function App() {
-
   return (
     <>
-   {/* <Login/> */}
-   <Signup/>
-   </>
-  )
+      <div className="flex justify-center">Hello World</div>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </>
+  );
 }
 
-export default App
+export default App;
