@@ -17,8 +17,10 @@ export const generateQuizFromVideo = createAsyncThunk(
 );
 
 const initialState = {
-//   quizData: localStorage.getItem("quizData") ? JSON.parse(localStorage.getItem("quizData")) : null,
-quizData: STATIC_QUIZ_RES,
+  quizData: localStorage.getItem("quizData")
+    ? JSON.parse(localStorage.getItem("quizData"))
+    : null,
+  //   quizData: STATIC_QUIZ_RES,
   loading: false,
   error: null,
 };

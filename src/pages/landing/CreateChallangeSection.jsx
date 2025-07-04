@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   DifficultyLevel,
@@ -14,10 +14,12 @@ import { generateQuizFromVideo } from "../../store/slices/quiz.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
+import Modal from "../../components/Modal";
 
 export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [quizModalOpen, setQuizModalOpen] = React.useState(false);
   const { error, loading } = useSelector((state) => state.quiz);
   const {
     handleSubmit,
@@ -256,24 +258,36 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         payload.prompt = data.prompt;
       }
 
-      // const resultAction = await dispatch(generateQuizFromVideo(payload));
-      // if (generateQuizFromVideo.fulfilled.match(resultAction)) {
-      //   toast.success("Quiz generated successfully!");
-      //   navigate("/mcqs");
-      //   localStorage.removeItem("quiz_selected_options")
-      //   localStorage.removeItem("quizData");
-      // } else if (resultAction.payload) {
-      //   toast.error(resultAction.payload);
-      // } else {
-      //   toast.error(error || "Quiz generation failed");
-      // }
-      setTimeout(() => {
+      const resultAction = await dispatch(generateQuizFromVideo(payload));
+      if (
+        resultAction?.type === "quiz/generateQuizFromVideo/rejected" ||
+        resultAction?.payload ===
+          "Found existing questionnaire and regenerated successfully"
+      ) {
+        setQuizModalOpen(true);
+        return;
+      }
+      if (generateQuizFromVideo.fulfilled.match(resultAction)) {
+        toast.success("Quiz generated successfully!");
+        navigate("/mcqs");
         localStorage.removeItem("quiz_selected_options");
         localStorage.removeItem("quizData");
-        navigate("/mcqs");
-      }, 2000);
+      } else if (resultAction.payload) {
+        toast.error(resultAction.payload);
+      } else {
+        toast.error(error || "Quiz generation failed");
+      }
+      // setTimeout(() => {
+      //   localStorage.removeItem("quiz_selected_options");
+      //   localStorage.removeItem("quizData");
+      //   navigate("/mcqs");
+      // }, 2000);
     }
   };
+
+  const closeQuizModal = useCallback(() => {
+    setQuizModalOpen(false);
+  }, []);
 
   if (!isTitleDisplay) {
     return (
@@ -549,11 +563,6 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                   <span className="text-xl font-bold text-center bg-clip-text">
                     GENERATE QUIZ
                   </span>
-                  {loading && (
-                    <span className="ml-2 flex items-center">
-                      <Loader />
-                    </span>
-                  )}
                 </button>
               </div>
             </div>

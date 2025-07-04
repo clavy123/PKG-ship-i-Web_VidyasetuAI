@@ -32,7 +32,8 @@ export const COMMON_ROUTES = [
       {
         name: "RootPage",
         path: "",
-        element: isAuthenticated() ? <LandingPage /> : <HomePage />,
+        // element: isAuthenticated() ? <LandingPage /> : <HomePage />,
+        element: <HomePage />,
       },
       // Add more child routes here
       {

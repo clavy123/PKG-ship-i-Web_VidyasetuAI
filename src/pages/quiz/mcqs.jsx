@@ -1,19 +1,50 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { formatTime } from "../../utils/helper";
 
 function Mcqs() {
   const { quizData } = useSelector((state) => state.quiz);
-  console.log("quizData-", quizData);
+//   console.log("quizData-", quizData);
+  const totalTime = useMemo(
+    () => quizData?.questions?.length * 60 || 0,
+    [quizData]
+  );
   const navigate = useNavigate();
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const saved = localStorage.getItem("quiz_time_left");
+    return saved ? parseInt(saved, 10) : totalTime;
+  });
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(() => {
+    const saved = localStorage.getItem("quiz_current_question");
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const [selectedOptions, setSelectedOptions] = useState(() => {
     // Load from localStorage if available
     const saved = localStorage.getItem("quiz_selected_options");
     return saved ? JSON.parse(saved) : [];
   });
-  const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      localStorage.removeItem("quiz_current_question");
+      localStorage.removeItem("quiz_selected_options");
+      localStorage.removeItem("quiz_time_left");
+      navigate("/result-card");
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        const newTime = prev - 1;
+        localStorage.setItem("quiz_time_left", newTime);
+        return newTime;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, navigate]);
 
   useEffect(() => {
     localStorage.setItem(
@@ -22,28 +53,46 @@ function Mcqs() {
     );
   }, [selectedOptions]);
 
-  const handleOptionSelect = (index) => {
-    setSelectedOptions((prev) => {
-      const updated = [...prev];
-      updated[currentQuestion] =
-        updated[currentQuestion] === index ? null : index;
-      return updated;
-    });
-  };
+  useEffect(() => {
+    localStorage.setItem("quiz_current_question", currentQuestion);
+  }, [currentQuestion]);
 
-  const handleNext = () => {
+  const handleOptionSelect = useCallback(
+    (index) => {
+      const currentQ = quizData?.questions?.[currentQuestion];
+      if (!currentQ) return;
+
+      const selected = currentQ.options[index];
+      const updated = [...selectedOptions];
+
+      updated[currentQuestion] = {
+        question: currentQ.question_text,
+        correctAnswer: currentQ.correct_answer,
+        selectedOption: selected,
+      };
+
+      setSelectedOptions(updated);
+    },
+    [quizData, currentQuestion, selectedOptions]
+  );
+
+  const handleNext = useCallback(() => {
     if (currentQuestion < quizData?.questions?.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestion((prev) => prev + 1);
     } else {
-      navigate("/result-card");
+        console.log("selected-", selectedOptions)
+    //   localStorage.removeItem("quiz_current_question");
+    //   localStorage.removeItem("quiz_selected_options");
+    //   localStorage.removeItem("quiz_time_left");
+    //   navigate("/result-card");
     }
-  };
+  }, [currentQuestion, quizData, navigate]);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
+      setCurrentQuestion((prev) => prev - 1);
     }
-  };
+  }, [currentQuestion]);
 
   return (
     <div className="min-h-screen bg-[#0F1123] text-white px-4 py-6 font-sans max-w-6xl w-full mx-auto">
@@ -54,7 +103,9 @@ function Mcqs() {
           <h1 className="text-xl font-semibold">Learning Game</h1>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[#0FFFA9] font-mono text-sm">00:45</span>
+          <span className="text-[#0FFFA9] font-mono text-sm">
+            {formatTime(timeLeft)}
+          </span>
           <div className="flex items-center gap-2">
             <img
               src="https://i.pravatar.cc/40?img=11"
@@ -69,21 +120,15 @@ function Mcqs() {
       {/* Progress */}
       <div className="max-w-3xl mx-auto mb-8">
         <div className="mb-2 text-sm text-gray-400 ">
-          {showResults
-            ? `Quiz Complete!`
-            : `Question ${currentQuestion + 1} of ${
-                quizData?.questions?.length
-              }`}
+          Question {currentQuestion + 1} of {quizData?.questions?.length}
         </div>
         <div className="w-full h-2 bg-gray-700 rounded-full mb-6">
           <div
             className="h-full bg-teal-400 rounded-full"
             style={{
-              width: showResults
-                ? "100%"
-                : `${
-                    ((currentQuestion + 1) / quizData?.questions?.length) * 100
-                  }%`,
+              width: `${
+                ((currentQuestion + 1) / quizData?.questions?.length) * 100
+              }%`,
             }}
           ></div>
         </div>
@@ -104,7 +149,7 @@ function Mcqs() {
                   onClick={() => handleOptionSelect(index)}
                   className={`flex items-center gap-4 px-4 py-3 rounded-lg border transition text-left
                   ${
-                    selectedOptions[currentQuestion] === index
+                    selectedOptions[currentQuestion]?.selectedOption === option
                       ? "bg-[#6A5AE0]"
                       : "bg-[#2B2D51] hover:bg-[#3a3d6f]"
                   }`}
@@ -129,7 +174,9 @@ function Mcqs() {
             <button
               className="flex-1 bg-[#8C6EFF] hover:bg-[#7a5ce0] text-white py-2 rounded-lg font-medium disabled:opacity-50"
               onClick={handleNext}
-              disabled={selectedOptions[currentQuestion] == null}
+              disabled={
+                selectedOptions[currentQuestion]?.selectedOption === null
+              }
             >
               {currentQuestion === quizData?.questions?.length - 1
                 ? "Finish Quiz"
