@@ -6,7 +6,7 @@ import { CreateChallengeSection } from "./CreateChallangeSection";
 
 const LandingPage = () => {
   return (
-    <div className="inline-flex flex-col items-start mx-auto my-0 w-full bg-white rounded-lg border-2 border-gray-300 border-solid">
+    <div className="inline-flex flex-col items-start mx-auto my-0 w-full rounded-lg">
       <div className="flex relative flex-col justify-center items-start w-full bg-gray-900 border-0 border border-solid">
         <div className="relative w-full">
           <HeroSection />
