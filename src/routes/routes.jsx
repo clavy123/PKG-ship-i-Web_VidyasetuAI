@@ -17,8 +17,8 @@ export const AUTH_ROUTES = [
     element: <LoginPage />,
   },
   {
-    name: "Register",
-    path: "/register",
+    name: "Signup",
+    path: "/signup",
     element: <SignupPage />,
   },
 ];

@@ -16,7 +16,10 @@ export const Header = () => {
             QuizCraft
           </h1>
         </div>
-        <button className="flex gap-2 justify-center items-center pt-1.5 pr-6 pb-2.5 pl-6 h-10 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[113px] max-sm:px-4 max-sm:py-2 max-sm:w-20 text-white bg-gradient-to-r from-[#ff073a] to-[#667eea]">
+        <button
+          className="flex gap-2 justify-center items-center pt-1.5 pr-6 pb-2.5 pl-6 h-10 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[113px] max-sm:px-4 max-sm:py-2 max-sm:w-20 text-white bg-gradient-to-r from-[#ff073a] to-[#667eea]"
+          onClick={() => navigate("/login")}
+        >
           <ICONS.IconUser size={30} />
           <Link
             className="text-base font-bold text-center bg-clip-text max-sm:text-sm"

@@ -1,6 +1,4 @@
-import axios from "axios";
-
-export const axiosInstance = axios.create();
+import { axiosInstance } from './instance'
 
 // Example interceptor: Add Authorization header if token exists
 axiosInstance.interceptors.request.use(
