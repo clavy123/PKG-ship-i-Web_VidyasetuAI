@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { ICONS } from "../../assets/icons";
 
 export const CreateChallengeSection = () => {
   const [selectedMode, setSelectedMode] = useState("multiple-choice");
@@ -109,13 +110,12 @@ export const CreateChallengeSection = () => {
   return (
     <section className="flex justify-center items-center px-72 py-20 w-full border-0 border-solid bg-black bg-opacity-0 max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16">
       <div className="flex flex-col gap-12 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8">
-        <div className="border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full">
-          <h2 className="mx-auto my-0 -mt-2 text-4xl leading-10 text-center bg-clip-text w-[572px] max-md:w-full max-md:text-3xl max-sm:text-2xl max-sm:leading-7 text-white">
+        <div className="border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full flex flex-col items-center">
+          <h2 className="mx-auto my-0 -mt-2 text-5xl md:text-4xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-center drop-shadow-lg tracking-tight w-full" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             CREATE YOUR CHALLENGE
           </h2>
-          <p className="mx-auto my-0 mt-14 text-xl leading-7 text-center text-gray-300 w-[686px] max-md:w-full max-md:text-lg max-sm:mt-5 max-sm:text-base max-sm:leading-6">
-            Drop a YouTube link and let AI craft your personalized quiz
-            adventure
+          <p className="mx-auto my-0 mt-8 text-2xl md:text-xl sm:text-lg font-semibold text-center text-white/90 w-[686px] max-md:w-full max-sm:mt-5 max-sm:text-base max-sm:leading-6 drop-shadow">
+            Drop a <span className="text-lime-400 font-bold">YouTube link</span> and let <span className="text-indigo-400 font-bold">AI</span> craft your personalized quiz adventure!
           </p>
         </div>
 
@@ -246,28 +246,15 @@ export const CreateChallengeSection = () => {
               {/* Generate Quiz Button */}
               <div className="flex justify-center items-center border-0 border-solid bg-black bg-opacity-0 w-full">
                 <button
-                  className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black"
+                  className="flex items-center justify-center gap-3 px-10 py-4 rounded-full text-white text-xl font-extrabold tracking-wide shadow-lg transition-all duration-200 bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] hover:scale-105 hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-400 w-[329px] max-sm:w-full max-sm:max-w-[280px]"
                   onClick={() => {
                     if (selectedMode === "multiple-choice") {
                       navigate("/mcqs");
                     }
                   }}
                 >
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: `<svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20.941px; height: 20.941px">
-                        <g clip-path="url(#clip0_7_155)">
-                          <path d="M1.05525 18.9551C0.290421 18.1902 0.290421 16.9469 1.05525 16.1779L16.6504 0.582778C17.4152 -0.182052 18.6586 -0.182052 19.4275 0.582778L20.8427 1.99792C21.6075 2.76275 21.6075 4.00611 20.8427 4.77503L5.24341 20.3702C4.47858 21.135 3.23522 21.135 2.4663 20.3702L1.05525 18.9551ZM14.6954 7.67893L18.9899 3.38443L18.041 2.43146L13.7465 6.72596L14.6995 7.67893H14.6954Z" fill="#0F0F23"/>
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_7_155">
-                            <path d="M0.478577 0.00610352H21.4194V20.9469H0.478577V0.00610352Z" fill="white"/>
-                          </clipPath>
-                        </defs>
-                      </svg>`,
-                    }}
-                  />
-                  <span className="text-xl font-bold text-center bg-clip-text">
+                  <ICONS.IconCheckCircle className="text-black" style={{ minWidth: 24, minHeight: 24 }} size={24} />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0A0A23] via-[#0A0A23] to-[#ff073a] font-extrabold text-xl tracking-wide" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                     GENERATE QUIZ
                   </span>
                 </button>
