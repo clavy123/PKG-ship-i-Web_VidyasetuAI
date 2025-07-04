@@ -6,9 +6,6 @@ export const FileDropzone = ({ onDrop, file, error }) => {
       onDrop,
       accept: {
         "application/pdf": [".pdf"],
-        "application/msword": [".doc"],
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-          [".docx"],
       },
       maxFiles: 1,
     });
@@ -27,11 +24,9 @@ export const FileDropzone = ({ onDrop, file, error }) => {
         <p className="text-gray-300">
           {isDragActive
             ? "Drop the file here ..."
-            : "Drag & drop a PDF, DOC, or DOCX file here, or click to select"}
+            : "Drag & drop a PDF file here, or click to select"}
         </p>
-        <p className="text-xs text-gray-400 mt-1">
-          Only .pdf, .doc, .docx files are allowed.
-        </p>
+        <p className="text-xs text-gray-400 mt-1">Only .pdf file is allowed.</p>
         {file && (
           <div className="mt-3 flex items-center gap-2">
             <span className="text-green-400 font-semibold">{file.name}</span>

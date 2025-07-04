@@ -160,12 +160,8 @@ export const CreateChallengeSection = () => {
             required: "File is required",
             validate: (file) => {
               if (!file) return "File is required";
-              const allowed =
-                file.type === "application/pdf" ||
-                file.type === "application/msword" ||
-                file.type ===
-                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-              return allowed || "Only PDF, DOC, DOCX files are allowed";
+              const allowed = file.type === "application/pdf";
+              return allowed || "Only PDF is allowed";
             },
           }}
           render={({ field, fieldState }) => (
