@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { ICONS } from "../../assets/icons";
 import {
   DifficultyLevel,
   LanguageType,
@@ -128,16 +129,17 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         id: "true-false",
         title: "True False",
         description: "Best of both worlds",
-        icon: `<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px; position: absolute; left: 50%; top: 2px; transform: translateX(-50%)">
-        <g clip-path="url(#clip0_7_179)">
-          <path d="M24.3164 2.76559C25.0195 2.47262 25.8223 2.63668 26.3613 3.16989L30.1113 6.91989C30.4629 7.27145 30.6621 7.74606 30.6621 8.24411C30.6621 8.74215 30.4629 9.21676 30.1113 9.56833L26.3613 13.3183C25.8223 13.8574 25.0195 14.0156 24.3164 13.7226C23.6133 13.4297 23.1562 12.75 23.1562 11.9882V10.125H21.2812C20.6895 10.125 20.1328 10.4004 19.7812 10.875L17.2969 14.1855L14.9531 11.0625L16.7812 8.62497C17.8418 7.207 19.5117 6.37497 21.2812 6.37497H23.1562V4.49997C23.1562 3.74411 23.6133 3.05856 24.3164 2.76559ZM10.2656 17.3144L12.6094 20.4375L10.7812 22.875C9.7207 24.2929 8.05078 25.125 6.28125 25.125H2.53125C1.49414 25.125 0.65625 24.2871 0.65625 23.25C0.65625 22.2129 1.49414 21.375 2.53125 21.375H6.28125C6.87305 21.375 7.42969 21.0996 7.78125 20.625L10.2656 17.3144ZM26.3555 28.33C25.8164 28.8691 25.0137 29.0273 24.3105 28.7343C23.6074 28.4414 23.1504 27.7617 23.1504 27V25.125H21.2812C19.5117 25.125 17.8418 24.2929 16.7812 22.875L7.78125 10.875C7.42969 10.4004 6.87305 10.125 6.28125 10.125H2.53125C1.49414 10.125 0.65625 9.28708 0.65625 8.24997C0.65625 7.21286 1.49414 6.37497 2.53125 6.37497H6.28125C8.05078 6.37497 9.7207 7.207 10.7812 8.62497L19.7812 20.625C20.1328 21.0996 20.6895 21.375 21.2812 21.375H23.1562V19.5C23.1562 18.7441 23.6133 18.0586 24.3164 17.7656C25.0195 17.4726 25.8223 17.6367 26.3613 18.1699L30.1113 21.9199C30.4629 22.2715 30.6621 22.7461 30.6621 23.2441C30.6621 23.7422 30.4629 24.2168 30.1113 24.5683L26.3613 28.3183L26.3555 28.33Z" fill="#FF073A"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_7_179">
-            <path d="M0.65625 0.75H30.6562V30.75H0.65625V0.75Z" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>`,
+        icon: `<svg width="60" height="32" viewBox="0 0 60 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 56px; height: 30px; position: absolute; left: 50%; top: 2px; transform: translateX(-50%)">
+          <g>
+            <circle cx="16" cy="16" r="15" stroke="#667eea" stroke-width="2" fill="#fff"/>
+            <path d="M10 16.5L14 20.5L22 12.5" stroke="#39FF14" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <g>
+            <circle cx="44" cy="16" r="15" stroke="#667eea" stroke-width="2" fill="#fff"/>
+            <path d="M37 23L51 9" stroke="#FF073A" stroke-width="3" stroke-linecap="round"/>
+            <path d="M37 9L51 23" stroke="#FF073A" stroke-width="3" stroke-linecap="round"/>
+          </g>
+        </svg>`,
       },
     ],
     []
@@ -351,7 +353,10 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               render={({ field }) => (
                 <div className="flex flex-col gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full">
                   <label className="flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0">
-                    <span className="text-lg font-bold text-lime-500">
+                    <span
+                      className={`text-lg font-bold text-lime-500 transition-all duration-200`}
+                      id="challenge-mode-label-text"
+                    >
                       Choose Your Challenge Mode
                     </span>
                   </label>
@@ -360,9 +365,11 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                       const isSelected = field.value === mode.id;
                       return (
                         <div
-                          className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 ${
-                            isSelected ? "border-indigo-500" : "border-gray-600"
-                          } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full`}
+                          className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 transition-all duration-200 ${
+                            isSelected
+                              ? "border-indigo-500 scale-105 shadow-lg"
+                              : "border-gray-600 hover:border-lime-400 hover:scale-105 hover:shadow-xl"
+                          } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full group/challenge-card`}
                           onClick={() => field.onChange(mode.id)}
                           key={mode.id}
                         >
@@ -426,12 +433,15 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   }
 
   return (
-    <section className="flex justify-center items-center px-72 py-20 w-full border-0 border-solid bg-opacity-0 max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16">
-      <div className="flex flex-col gap-12 justify-center items-start border-0 border-solid bg-opacity-0 w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8">
-        <div className="border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full">
-          <h2 className="mx-auto my-0 -mt-2 text-4xl leading-10 text-center bg-clip-text w-[572px] max-md:w-full max-md:text-3xl max-sm:text-2xl max-sm:leading-7 text-white">
+    <section className="flex justify-center items-center px-72 py-20 w-full border-0 border-solid bg-black bg-opacity-0 max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16">
+      <div className="flex flex-col gap-12 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8">
+        <div className="border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full flex flex-col items-center">
+          <h2 className="mx-auto my-0 -mt-2 text-5xl md:text-4xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-center drop-shadow-lg tracking-tight w-full" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             CREATE YOUR CHALLENGE
           </h2>
+          <p className="mx-auto my-0 mt-8 text-2xl md:text-xl sm:text-lg font-semibold text-center text-white/90 w-[686px] max-md:w-full max-sm:mt-5 max-sm:text-base max-sm:leading-6 drop-shadow">
+            Drop a <span className="text-lime-400 font-bold">YouTube link</span> and let <span className="text-indigo-400 font-bold">AI</span> craft your personalized quiz adventure!
+          </p>
         </div>
 
         <div className="w-full flex justify-center bg-gradient-to-r from-[#1a1a2e] to-[#16213e]">
@@ -493,23 +503,46 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                 rules={{ required: "Challenge mode is required" }}
                 render={({ field }) => (
                   <div className="flex flex-col gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full">
-                    <label className="flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0">
-                      <span className="text-lg font-bold text-lime-500">
+                    {/* Challenge Mode Label with hover effect */}
+                    <label
+                      className={`flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0 transition-all duration-200 ${
+                        field.value && field.value !== '' ? '' : ''
+                      }`}
+                      id="challenge-mode-label"
+                    >
+                      <span
+                        className="text-lg font-bold text-lime-500 transition-all duration-200"
+                        id="challenge-mode-label-text"
+                      >
                         Choose Your Challenge Mode
                       </span>
                     </label>
-                    <div className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full max-md:flex-col max-md:gap-3">
+                    <div
+                      className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full max-md:flex-col max-md:gap-3 group/challenge-modes"
+                    >
                       {challengeModes.map((mode) => {
                         const isSelected = field.value === mode.id;
                         return (
                           <div
-                            className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 ${
+                            className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 transition-all duration-200 ${
                               isSelected
-                                ? "border-indigo-500"
-                                : "border-gray-600"
-                            } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full`}
+                                ? "border-indigo-500 scale-105 shadow-lg"
+                                : "border-gray-600 hover:border-lime-400 hover:scale-105 hover:shadow-xl"
+                            } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full group/challenge-card`}
                             onClick={() => field.onChange(mode.id)}
                             key={mode.id}
+                            onMouseEnter={() => {
+                              const label = document.getElementById('challenge-mode-label-text');
+                              if (label) {
+                                label.classList.add('text-lime-300', 'drop-shadow-glow', 'scale-105');
+                              }
+                            }}
+                            onMouseLeave={() => {
+                              const label = document.getElementById('challenge-mode-label-text');
+                              if (label) {
+                                label.classList.remove('text-lime-300', 'drop-shadow-glow', 'scale-105');
+                              }
+                            }}
                           >
                             <div className="relative border-0 border-solid bg-black bg-opacity-0 h-[88px] w-[231px]">
                               <div
@@ -556,11 +589,11 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               {/* Generate Quiz Button */}
               <div className="flex justify-center items-center border-0 border-solid bg-black bg-opacity-0 w-full">
                 <button
+                  className="flex items-center justify-center gap-3 px-10 py-4 rounded-full text-white text-xl font-extrabold tracking-wide shadow-lg transition-all duration-200 bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] hover:scale-105 hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-400 w-[329px] max-sm:w-full max-sm:max-w-[280px]"
                   type="submit"
-                  disabled={loading}
-                  className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black"
                 >
-                  <span className="text-xl font-bold text-center bg-clip-text">
+                  <ICONS.IconCheckCircle className="text-black" style={{ minWidth: 24, minHeight: 24 }} size={24} />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0A0A23] via-[#0A0A23] to-[#ff073a] font-extrabold text-xl tracking-wide" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                     GENERATE QUIZ
                   </span>
                 </button>

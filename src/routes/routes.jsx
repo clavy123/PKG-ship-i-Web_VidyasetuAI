@@ -7,6 +7,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import LandingPage from "../pages/user/Landing";
 import Mcqs from "../pages/quiz/mcqs";
 import ResultCard from "../components/ResultCard";
+import Truefalse from "../pages/quiz/truefalse";
 
 const isAuthenticated = () => !!localStorage.getItem("token");
 
@@ -45,6 +46,11 @@ export const COMMON_ROUTES = [
         name: "ResultCard",
         path: "/result-card",
         element: <ResultCard />,
+      },
+      {
+        name: "TrueFalse",
+        path: "/true-false",
+        element: <Truefalse />,
       },
     ],
   },

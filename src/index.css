@@ -1,3 +1,13 @@
+@keyframes rocket-bounce {
+  0%, 100% { transform: translateY(0) rotate(-10deg); }
+  50% { transform: translateY(-18px) rotate(10deg); }
+}
+.animate-rocket-bounce {
+  animation: rocket-bounce 1.5s infinite;
+}
+.animate-bounce-slow {
+  animation: bounce 2.5s infinite;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

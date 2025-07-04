@@ -90,22 +90,8 @@ const ResultCard = () => {
           <h2 className="text-xl text-gray-300 mb-2">
             Results for: <span className="text-white font-semibold">{resultData.user}</span> - 23 seconds ago
           </h2>
-
-          <div className="flex justify-between">
           <h1 className="text-3xl font-bold text-white mb-6">{resultData.quizTitle}</h1>
 
-          <button
-            className="flex gap-2 justify-center items-center pt-1.5 pr-6 pb-2.5 pl-6 h-10 rounded-full border-0 border-solid shadow-sm cursor-pointer max-sm:px-4 max-sm:py-2 max-sm:w-20 text-white bg-gradient-to-r from-[#ff073a] to-[#667eea]"
-            onClick={() => navigate("/")}
-          >
-            <span
-              className="text-base font-bold text-center bg-clip-text max-sm:text-sm"
-            >
-              Try Again
-            </span>
-          </button>
-          </div>
- 
           {/* Summary - Responsive + Gamification Badges */}
           <div
             className="w-full bg-[#121a2f] border border-gray-700 rounded-xl p-6 mb-10 flex flex-col sm:flex-row flex-wrap gap-6 sm:gap-0 items-stretch sm:items-center justify-between relative"
@@ -143,7 +129,7 @@ const ResultCard = () => {
               </p>
             </div>
           </div>
- 
+
           {/* Progress Bar - Gamified */}
           <div className="w-full mb-6">
             <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
