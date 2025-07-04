@@ -4,6 +4,8 @@ import SignupPage from "../pages/auth/Signup";
 import HomePage from "../pages/home";
 import NotFoundPage from "../pages/NotFoundPage";
 import DefaultLayout from "../layouts/DefaultLayout";
+import Mcqs from "../pages/quiz/mcqs";
+import ResultCard from "../components/ResultCard";
 
 // Example auth check (replace with real logic)
 const isAuthenticated = () => !!localStorage.getItem("token");
@@ -24,6 +26,16 @@ export const AUTH_ROUTES = [
     name: "Register",
     path: "/register",
     element: <SignupPage />,
+  },
+  {
+    name: "Mcqs",
+    path: "/mcqs",
+    element: <Mcqs />,
+  },
+  {
+    name: "ResultCard",
+    path: "/result-card",
+    element: <ResultCard />,
   },
 ];
 

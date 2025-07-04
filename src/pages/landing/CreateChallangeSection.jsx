@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 export const CreateChallengeSection = () => {
   const [selectedMode, setSelectedMode] = useState("multiple-choice");
   const [activeTab, setActiveTab] = useState("youtube");
+  const navigate = useNavigate();
 
   const challengeModes = [
     {
@@ -243,7 +245,14 @@ export const CreateChallengeSection = () => {
 
               {/* Generate Quiz Button */}
               <div className="flex justify-center items-center border-0 border-solid bg-black bg-opacity-0 w-full">
-                <button className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black">
+                <button
+                  className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black"
+                  onClick={() => {
+                    if (selectedMode === "multiple-choice") {
+                      navigate("/mcqs");
+                    }
+                  }}
+                >
                   <div
                     dangerouslySetInnerHTML={{
                       __html: `<svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20.941px; height: 20.941px">
