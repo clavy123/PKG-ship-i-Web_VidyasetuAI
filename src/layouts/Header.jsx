@@ -21,7 +21,7 @@ export const Header = () => {
         <div className="flex gap-3 items-center h-12 border-0 border-solid bg-black bg-opacity-0">
           <ICONS.IconCPu size={30} color="#fff" />
           <h1
-            className="text-2xl leading-8 max-sm:text-xl max-sm:leading-6 bg-gradient-to-r from-[#39ff14] to-[#667eea] bg-clip-text text-transparent"
+            className="text-2xl leading-8 max-sm:text-xl max-sm:leading-6 bg-gradient-to-r from-[#39ff14] to-[#667eea] bg-clip-text text-transparent cursor-pointer"
             onClick={() => navigate("/")}
           >
             VidyaSetu

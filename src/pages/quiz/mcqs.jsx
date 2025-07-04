@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { formatTime } from "../../utils/helper";
+import { quizEvaluate } from "../../store/slices/quiz.slice";
+import { toast } from "react-toastify";
 
 function Mcqs() {
   const { quizData } = useSelector((state) => state.quiz);
-//   console.log("quizData-", quizData);
+  //   console.log("quizData-", quizData);
   const totalTime = useMemo(
     () => quizData?.questions?.length * 60 || 0,
     [quizData]
   );
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [timeLeft, setTimeLeft] = useState(() => {
     const saved = localStorage.getItem("quiz_time_left");
     return saved ? parseInt(saved, 10) : totalTime;
@@ -28,10 +31,10 @@ function Mcqs() {
 
   useEffect(() => {
     if (timeLeft <= 0) {
-      localStorage.removeItem("quiz_current_question");
-      localStorage.removeItem("quiz_selected_options");
-      localStorage.removeItem("quiz_time_left");
-      navigate("/result-card");
+      //   localStorage.removeItem("quiz_current_question");
+      //   localStorage.removeItem("quiz_selected_options");
+      //   localStorage.removeItem("quiz_time_left");
+      //   navigate("/result-card");
       return;
     }
 
@@ -76,17 +79,40 @@ function Mcqs() {
     [quizData, currentQuestion, selectedOptions]
   );
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
     if (currentQuestion < quizData?.questions?.length - 1) {
       setCurrentQuestion((prev) => prev + 1);
     } else {
-        console.log("selected-", selectedOptions)
-    //   localStorage.removeItem("quiz_current_question");
-    //   localStorage.removeItem("quiz_selected_options");
-    //   localStorage.removeItem("quiz_time_left");
-    //   navigate("/result-card");
+      console.log("selected-", selectedOptions);
+      const result = await dispatch(
+        quizEvaluate({
+          token: localStorage.getItem("quizToken"),
+          answers: selectedOptions?.map((op) => ({
+            questionText: op.question,
+            givenAnswer: op.selectedOption,
+          })),
+        })
+      );
+      console.log("res-", result);
+      if (quizEvaluate.fulfilled.match(result)) {
+        toast.success("Quiz evaluated successfully!");
+        navigate("/result-card");
+        localStorage.removeItem("quiz_selected_options");
+        localStorage.removeItem("quiz_current_question");
+      }
+      //   if(result)
+      //   localStorage.removeItem("quiz_current_question");
+      //   localStorage.removeItem("quiz_selected_options");
+      //   localStorage.removeItem("quiz_time_left");
+      //   navigate("/result-card");
     }
-  }, [currentQuestion, quizData, navigate]);
+  }, [
+    currentQuestion,
+    dispatch,
+    navigate,
+    quizData?.questions?.length,
+    selectedOptions,
+  ]);
 
   const handlePrevious = useCallback(() => {
     if (currentQuestion > 0) {

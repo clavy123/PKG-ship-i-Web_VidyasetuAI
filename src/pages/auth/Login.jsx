@@ -134,12 +134,12 @@ function Login() {
             </button>
 
             {/* Divider */}
-            <div className="text-center text-gray-400 text-sm mb-4">
+            {/* <div className="text-center text-gray-400 text-sm mb-4">
               or continue with
-            </div>
+            </div> */}
 
             {/* OAuth Buttons */}
-            <div className="flex flex-col gap-3">
+            {/* <div className="flex flex-col gap-3">
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 bg-[#1f2937] hover:bg-[#374151] text-white py-2 rounded text-sm"
@@ -151,7 +151,7 @@ function Login() {
                 />
                 Continue with Google
               </button>
-            </div>
+            </div> */}
 
             <p className="mt-6 text-sm text-center text-gray-400">
               Don’t have an account?

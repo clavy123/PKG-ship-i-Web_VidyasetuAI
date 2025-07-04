@@ -11,7 +11,10 @@ import { FormInput } from "../../components/FormInput";
 import { FormTextarea } from "../../components/FormTextarea";
 import { FileDropzone } from "../../components/FileDropzone";
 import { useNavigate } from "react-router";
-import { generateQuizFromVideo } from "../../store/slices/quiz.slice";
+import {
+  generateQuizFromVideo,
+  generateQuizFromPrompt,
+} from "../../store/slices/quiz.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
@@ -254,30 +257,50 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
 
       if (activeTab === "youtube") {
         payload.videoUrl = data.youtube;
+        const resultAction = await dispatch(generateQuizFromVideo(payload));
+        console.log("resultAction-", resultAction);
+        // if (
+        //   resultAction?.type === "quiz/generateQuizFromVideo/rejected" ||
+        //   resultAction?.payload ===
+        //     "Found existing questionnaire and regenerated successfully"
+        // ) {
+        //   setQuizModalOpen(true);
+        //   return;
+        // }
+        if (resultAction?.payload?.statusCode === 200) {
+          toast.success("Quiz generated successfully!");
+          navigate("/mcqs");
+          localStorage.removeItem("quiz_selected_options");
+          localStorage.removeItem("quizData");
+        } else if (resultAction.payload) {
+          toast.error(resultAction.payload);
+        } else {
+          toast.error(error || "Quiz generation failed");
+        }
       } else if (activeTab === "context") {
         payload.context = data.context;
       } else if (activeTab === "prompt") {
         payload.prompt = data.prompt;
-      }
-
-      const resultAction = await dispatch(generateQuizFromVideo(payload));
-      if (
-        resultAction?.type === "quiz/generateQuizFromVideo/rejected" ||
-        resultAction?.payload ===
-          "Found existing questionnaire and regenerated successfully"
-      ) {
-        setQuizModalOpen(true);
-        return;
-      }
-      if (generateQuizFromVideo.fulfilled.match(resultAction)) {
-        toast.success("Quiz generated successfully!");
-        navigate("/mcqs");
-        localStorage.removeItem("quiz_selected_options");
-        localStorage.removeItem("quizData");
-      } else if (resultAction.payload) {
-        toast.error(resultAction.payload);
-      } else {
-        toast.error(error || "Quiz generation failed");
+        const resultAction = await dispatch(generateQuizFromPrompt(payload));
+        console.log("resultAction-", resultAction);
+        // if (
+        //   resultAction?.type === "quiz/generateQuizFromPrompt/rejected" ||
+        //   resultAction?.payload ===
+        //     "Found existing questionnaire and regenerated successfully"
+        // ) {
+        //   setQuizModalOpen(true);
+        //   return;
+        // }
+        if (resultAction?.payload?.statusCode === 200) {
+          toast.success("Quiz generated successfully!");
+          navigate("/mcqs");
+          localStorage.removeItem("quiz_selected_options");
+          localStorage.removeItem("quizData");
+        } else if (resultAction.payload) {
+          toast.error(resultAction.payload);
+        } else {
+          toast.error(error || "Quiz generation failed");
+        }
       }
       // setTimeout(() => {
       //   localStorage.removeItem("quiz_selected_options");
@@ -436,11 +459,19 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
     <section className="flex justify-center items-center px-72 py-20 w-full border-0 border-solid bg-black bg-opacity-0 max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16">
       <div className="flex flex-col gap-12 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8">
         <div className="border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full flex flex-col items-center">
-          <h2 className="mx-auto my-0 -mt-2 text-5xl md:text-4xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-center drop-shadow-lg tracking-tight w-full" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <h2
+            className="mx-auto my-0 -mt-2 text-5xl md:text-4xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-center drop-shadow-lg tracking-tight w-full"
+            style={{
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
             CREATE YOUR CHALLENGE
           </h2>
           <p className="mx-auto my-0 mt-8 text-2xl md:text-xl sm:text-lg font-semibold text-center text-white/90 w-[686px] max-md:w-full max-sm:mt-5 max-sm:text-base max-sm:leading-6 drop-shadow">
-            Drop a <span className="text-lime-400 font-bold">YouTube link</span> and let <span className="text-indigo-400 font-bold">AI</span> craft your personalized quiz adventure!
+            Drop a <span className="text-lime-400 font-bold">YouTube link</span>{" "}
+            and let <span className="text-indigo-400 font-bold">AI</span> craft
+            your personalized quiz adventure!
           </p>
         </div>
 
@@ -506,7 +537,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                     {/* Challenge Mode Label with hover effect */}
                     <label
                       className={`flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0 transition-all duration-200 ${
-                        field.value && field.value !== '' ? '' : ''
+                        field.value && field.value !== "" ? "" : ""
                       }`}
                       id="challenge-mode-label"
                     >
@@ -517,9 +548,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                         Choose Your Challenge Mode
                       </span>
                     </label>
-                    <div
-                      className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full max-md:flex-col max-md:gap-3 group/challenge-modes"
-                    >
+                    <div className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full max-md:flex-col max-md:gap-3 group/challenge-modes">
                       {challengeModes.map((mode) => {
                         const isSelected = field.value === mode.id;
                         return (
@@ -532,15 +561,27 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                             onClick={() => field.onChange(mode.id)}
                             key={mode.id}
                             onMouseEnter={() => {
-                              const label = document.getElementById('challenge-mode-label-text');
+                              const label = document.getElementById(
+                                "challenge-mode-label-text"
+                              );
                               if (label) {
-                                label.classList.add('text-lime-300', 'drop-shadow-glow', 'scale-105');
+                                label.classList.add(
+                                  "text-lime-300",
+                                  "drop-shadow-glow",
+                                  "scale-105"
+                                );
                               }
                             }}
                             onMouseLeave={() => {
-                              const label = document.getElementById('challenge-mode-label-text');
+                              const label = document.getElementById(
+                                "challenge-mode-label-text"
+                              );
                               if (label) {
-                                label.classList.remove('text-lime-300', 'drop-shadow-glow', 'scale-105');
+                                label.classList.remove(
+                                  "text-lime-300",
+                                  "drop-shadow-glow",
+                                  "scale-105"
+                                );
                               }
                             }}
                           >
@@ -592,8 +633,18 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                   className="flex items-center justify-center gap-3 px-10 py-4 rounded-full text-white text-xl font-extrabold tracking-wide shadow-lg transition-all duration-200 bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] hover:scale-105 hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-400 w-[329px] max-sm:w-full max-sm:max-w-[280px]"
                   type="submit"
                 >
-                  <ICONS.IconCheckCircle className="text-black" style={{ minWidth: 24, minHeight: 24 }} size={24} />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0A0A23] via-[#0A0A23] to-[#ff073a] font-extrabold text-xl tracking-wide" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  <ICONS.IconCheckCircle
+                    className="text-black"
+                    style={{ minWidth: 24, minHeight: 24 }}
+                    size={24}
+                  />
+                  <span
+                    className="bg-clip-text text-transparent bg-gradient-to-r from-[#0A0A23] via-[#0A0A23] to-[#ff073a] font-extrabold text-xl tracking-wide"
+                    style={{
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
                     GENERATE QUIZ
                   </span>
                 </button>
