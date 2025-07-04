@@ -223,6 +223,7 @@ export const CreateChallengeSection = () => {
                           isSelected ? "border-indigo-500" : "border-gray-600"
                         } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full`}
                         onClick={() => setSelectedMode(mode.id)}
+                        key={mode.id}
                       >
                         <div className="relative border-0 border-solid bg-black bg-opacity-0 h-[88px] w-[231px]">
                           <div
