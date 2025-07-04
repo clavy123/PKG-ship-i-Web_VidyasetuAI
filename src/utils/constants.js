@@ -17,3 +17,9 @@ export const SourceType = {
   Prompt: 3,
   Context: 4,
 };
+
+export const LanguageType = {
+  English: 1,
+  Hindi: 2,
+  Gujarati: 3,
+};
