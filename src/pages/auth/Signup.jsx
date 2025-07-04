@@ -5,12 +5,13 @@ import { ICONS } from "../../assets/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { signupUser } from "../../store/slices/auth.slice";
 import { toast } from "react-toastify";
+import Loader from "../../components/Loader";
 
 function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
 
   const {
     register,
@@ -59,13 +60,6 @@ function Signup() {
             <p className="text-sm text-center text-gray-400 mb-6">
               Join VidyaSetu and start your journey
             </p>
-
-            {/* Error message */}
-            {error && (
-              <div className="mb-4 text-red-400 text-center text-sm">
-                {error}
-              </div>
-            )}
 
             {/* First Name Input */}
             <div className="mb-4">
@@ -182,11 +176,16 @@ function Signup() {
             {/* Signup Button */}
             <button
               type="submit"
-              className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded mb-4 mt-3 disabled:opacity-60"
+              className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded mb-4 mt-5 disabled:opacity-60 flex items-center justify-center gap-2"
               disabled={isSubmitting || loading}
             >
               <i className="fas fa-sign-in-alt mr-2"></i>
-              {loading ? "Signing Up..." : "Sign Up"}
+              <span>Sign Up</span>
+              {loading && (
+                <span className="ml-2 flex items-center">
+                  <Loader />
+                </span>
+              )}
             </button>
 
             <p className="mt-6 text-sm text-center text-gray-400">
