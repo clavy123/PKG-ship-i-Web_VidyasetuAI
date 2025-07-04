@@ -9,8 +9,10 @@ import { FormSelect } from "../../components/FormSelect";
 import { FormInput } from "../../components/FormInput";
 import { FormTextarea } from "../../components/FormTextarea";
 import { FileDropzone } from "../../components/FileDropzone";
+import { useNavigate } from "react-router";
 
 export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     control,
@@ -275,6 +277,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
       }
 
       console.log("JSON payload:", payload);
+      navigate("/mcqs");
       // fetch("/api/quiz", { method: "POST", body: JSON.stringify(payload) });
     }
   };
