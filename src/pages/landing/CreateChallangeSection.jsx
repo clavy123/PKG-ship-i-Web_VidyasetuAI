@@ -10,7 +10,7 @@ import { FormInput } from "../../components/FormInput";
 import { FormTextarea } from "../../components/FormTextarea";
 import { FileDropzone } from "../../components/FileDropzone";
 
-export const CreateChallengeSection = () => {
+export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   const {
     handleSubmit,
     control,
@@ -26,8 +26,8 @@ export const CreateChallengeSection = () => {
       context: "",
       pdf: null,
       challengeMode: "multiple-choice",
-      languageType: "",
-      difficulty: "",
+      languageType: 2,
+      difficulty: 2,
       numberOfQuestions: 5,
     },
   });
@@ -36,26 +36,26 @@ export const CreateChallengeSection = () => {
 
   // Helper: map tab to sourceTypeId
   const tabToSourceTypeId = {
-    youtube: SourceType.PDF, // If you want YouTube to be 2, change this accordingly
-    context: SourceType.Context,
-    prompt: SourceType.Prompt,
-    pdf: SourceType.PDF,
+    youtube: SourceType.pdf, // If you want YouTube to be 2, change this accordingly
+    context: SourceType.context,
+    prompt: SourceType.prompt,
+    pdf: SourceType.pdf,
   };
 
   // Helper: map challengeMode to questionsTypeId
   const challengeModeToTypeId = {
     "multiple-choice": 1,
-    "short-answer": 2,
-    "mixed-mode": 3,
+    "fill-in-the-blank": 2,
+    "true-false": 3,
     "open-text": 4,
   };
 
   // Language options
   const languageTypeOptions = useMemo(
     () => [
-      { value: LanguageType.English, label: "English" },
-      { value: LanguageType.Hindi, label: "Hindi" },
-      { value: LanguageType.Gujarati, label: "Gujarati" },
+      { value: LanguageType.english, label: "English" },
+      { value: LanguageType.hindi, label: "Hindi" },
+      { value: LanguageType.gujrati, label: "Gujarati" },
     ],
     []
   );
@@ -63,9 +63,9 @@ export const CreateChallengeSection = () => {
   // Difficulty Level options
   const difficultyOptions = useMemo(
     () => [
-      { value: DifficultyLevel.Easy, label: "Easy" },
-      { value: DifficultyLevel.Medium, label: "Medium" },
-      { value: DifficultyLevel.Hard, label: "Hard" },
+      { value: DifficultyLevel.easy, label: "Easy" },
+      { value: DifficultyLevel.medium, label: "Medium" },
+      { value: DifficultyLevel.hard, label: "Hard" },
     ],
     []
   );
@@ -100,8 +100,8 @@ export const CreateChallengeSection = () => {
       </svg>`,
       },
       {
-        id: "short-answer",
-        title: "Short Answer",
+        id: "fill-in-the-blank",
+        title: "Fill In The Blank",
         description: "One-liner responses",
         icon: `<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px; position: absolute; left: 50%; top: 2px; transform: translateX(-50%)">
         <g clip-path="url(#clip0_7_172)">
@@ -115,8 +115,8 @@ export const CreateChallengeSection = () => {
       </svg>`,
       },
       {
-        id: "mixed-mode",
-        title: "Mixed Mode",
+        id: "true-false",
+        title: "True False",
         description: "Best of both worlds",
         icon: `<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px; position: absolute; left: 50%; top: 2px; transform: translateX(-50%)">
         <g clip-path="url(#clip0_7_179)">
@@ -279,6 +279,142 @@ export const CreateChallengeSection = () => {
     }
   };
 
+  if (!isTitleDisplay) {
+    return (
+      <div className="w-full flex justify-center">
+        <form
+          className="bg-gray-900 rounded-2xl shadow-lg border border-gray-700 px-0 py-0 w-fit flex flex-col items-center max-md:min-w-0 max-md:w-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          {/* Tabs */}
+          <div className="w-full flex justify-center pt-6">
+            <div className="bg-gray-800 rounded-xl shadow border border-gray-700 px-4 py-3 w-fit flex">
+              <div className="flex gap-4">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+                      activeTab === tab.id
+                        ? "bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white"
+                        : "bg-gray-900 text-gray-300"
+                    }`}
+                    onClick={() => {
+                      setValue("activeTab", tab.id);
+                      setValue("pdf", "");
+                      setValue("youtube", "");
+                      setValue("prompt", "");
+                      setValue("context", "");
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Inputs and Challenge Mode */}
+          <div className="flex flex-col gap-8 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full px-8 py-8 max-md:px-4 max-md:py-6">
+            {/* Tab Content */}
+            {renderTabInput()}
+
+            {/* Number of Questions */}
+            <FormInput
+              name="numberOfQuestions"
+              control={control}
+              type="number"
+              label="Number of Questions"
+              placeholder="Enter number of questions"
+              rules={{
+                required: "Number of questions is required",
+                min: { value: 1, message: "At least 1 question required" },
+                max: { value: 50, message: "Maximum 50 questions allowed" },
+              }}
+            />
+
+            {/* Challenge Mode Section */}
+            <Controller
+              name="challengeMode"
+              control={control}
+              rules={{ required: "Challenge mode is required" }}
+              render={({ field }) => (
+                <div className="flex flex-col gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full">
+                  <label className="flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0">
+                    <span className="text-lg font-bold text-lime-500">
+                      Choose Your Challenge Mode
+                    </span>
+                  </label>
+                  <div className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full max-md:flex-col max-md:gap-3">
+                    {challengeModes.map((mode) => {
+                      const isSelected = field.value === mode.id;
+                      return (
+                        <div
+                          className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 ${
+                            isSelected ? "border-indigo-500" : "border-gray-600"
+                          } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full`}
+                          onClick={() => field.onChange(mode.id)}
+                          key={mode.id}
+                        >
+                          <div className="relative border-0 border-solid bg-black bg-opacity-0 h-[88px] w-[231px]">
+                            <div
+                              dangerouslySetInnerHTML={{ __html: mode.icon }}
+                            />
+                            <h4 className="absolute left-2/4 text-base font-bold leading-6 text-center text-white whitespace-nowrap -translate-x-2/4 top-[33px]">
+                              {mode.title}
+                            </h4>
+                            <p className="absolute left-2/4 text-sm leading-5 text-center text-gray-400 whitespace-nowrap -translate-x-2/4 top-[66px]">
+                              {mode.description}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {field.value === "" && (
+                    <span className="text-xs text-red-400 mt-1">
+                      {errors.challengeMode?.message}
+                    </span>
+                  )}
+                </div>
+              )}
+            />
+
+            {/* Select Language & Difficulty Level */}
+            <div className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full">
+              <FormSelect
+                name="languageType"
+                control={control}
+                label="Select Language"
+                options={languageTypeOptions}
+                rules={{ required: "Language is required" }}
+              />
+              <FormSelect
+                name="difficulty"
+                control={control}
+                label="Select Difficulty Level"
+                options={difficultyOptions}
+                rules={{ required: "Difficulty level is required" }}
+              />
+            </div>
+
+            {/* Generate Quiz Button */}
+            <div className="flex justify-center items-center border-0 border-solid bg-black bg-opacity-0 w-full">
+              <button
+                type="submit"
+                className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black"
+              >
+                <span className="text-xl font-bold text-center bg-clip-text">
+                  GENERATE QUIZ
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <section className="flex justify-center items-center px-72 py-20 w-full border-0 border-solid bg-opacity-0 max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16">
       <div className="flex flex-col gap-12 justify-center items-start border-0 border-solid bg-opacity-0 w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8">
@@ -288,7 +424,6 @@ export const CreateChallengeSection = () => {
           </h2>
         </div>
 
-        {/* Main Wrapper Box for Tabs + Inputs + Challenge Mode */}
         <div className="w-full flex justify-center bg-gradient-to-r from-[#1a1a2e] to-[#16213e]">
           <form
             className="bg-gray-900 rounded-2xl shadow-lg border border-gray-700 px-0 py-0 w-fit flex flex-col items-center max-md:min-w-0 max-md:w-full"

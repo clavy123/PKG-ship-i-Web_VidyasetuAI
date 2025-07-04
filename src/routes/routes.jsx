@@ -4,16 +4,10 @@ import SignupPage from "../pages/auth/Signup";
 import HomePage from "../pages/home";
 import NotFoundPage from "../pages/NotFoundPage";
 import DefaultLayout from "../layouts/DefaultLayout";
+import LandingPage from "../pages/user/Landing";
 
-// Example auth check (replace with real logic)
 const isAuthenticated = () => !!localStorage.getItem("token");
 
-// Private route wrapper
-function PrivateRoute({ children }) {
-  return isAuthenticated() ? children : <Navigate to="/login" replace />;
-}
-
-// Auth routes
 export const AUTH_ROUTES = [
   {
     name: "Login",
@@ -27,7 +21,6 @@ export const AUTH_ROUTES = [
   },
 ];
 
-// Common routes
 export const COMMON_ROUTES = [
   {
     name: "Home",
@@ -35,16 +28,11 @@ export const COMMON_ROUTES = [
     element: <DefaultLayout />,
     children: [
       {
-        name: "HomePage",
+        name: "RootPage",
         path: "",
-        element: <HomePage />,
+        element: isAuthenticated() ? <LandingPage /> : <HomePage />,
       },
       // Add more child routes here
-      // {
-      //   name: "Quiz",
-      //   path: "quiz",
-      //   element: <QuizPage />,
-      // },
     ],
   },
   {
@@ -54,8 +42,5 @@ export const COMMON_ROUTES = [
   },
 ];
 
-// Combine all routes
 export const ROUTES = [...AUTH_ROUTES, ...COMMON_ROUTES];
-
-// Correct usage: pass the array directly
 export const router = createBrowserRouter(ROUTES);
