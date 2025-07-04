@@ -1,19 +1,25 @@
 export const QuestionType = {
-  MCQ: 1,
-  FillInBlank: 2,
-  OpenText: 3,
-  TrueFalse: 4,
+  mcq: 1,
+  fillinblank: 2,
+  // opentext: 3,
+  truefalse: 4,
 };
 
 export const DifficultyLevel = {
-  Easy: 1,
-  Medium: 2,
-  Hard: 3,
+  easy: 1,
+  medium: 2,
+  hard: 3,
 };
 
 export const SourceType = {
-  PDF: 1,
-  YouTube: 2,
-  Prompt: 3,
-  Context: 4,
+  pdf: 1,
+  youtube: 2,
+  prompt: 3,
+  context: 4,
+};
+
+export const LanguageType = {
+  hindi: 1,
+  english: 2,
+  gujrati: 3,
 };
