@@ -1,15 +1,15 @@
 import { Outlet } from "react-router";
+import { Header } from "./Header";
+import { Footer } from "./Footer";
 
 export default function DefaultLayout() {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* You can add a navbar/header here */}
-      Navbar
+      <Header />
       <main className="flex-1 flex flex-col">
         <Outlet />
       </main>
-      Footer
-      {/* You can add a footer here */}
+      <Footer />
     </div>
   );
 }

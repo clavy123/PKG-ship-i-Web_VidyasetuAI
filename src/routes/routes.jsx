@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate } from "react-router";
 import LoginPage from "../pages/auth/Login";
 import SignupPage from "../pages/auth/Signup";
 import HomePage from "../pages/home";
-import LandingPage from "../pages/landing/LandingPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import DefaultLayout from "../layouts/DefaultLayout";
 
