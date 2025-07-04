@@ -1,6 +1,9 @@
 
 
+import { useNavigate } from "react-router";
+
 function Login() {
+    const navigate = useNavigate();
     return (
         <>
         <div>
@@ -54,7 +57,12 @@ function Login() {
 
           <p className="mt-6 text-sm text-center text-gray-400">
             Don’t have an account?
-            <a href="#" className="text-[#38bdf8] hover:underline ml-1">Create one here</a>
+            <button
+              className="text-[#38bdf8] hover:underline ml-1 bg-transparent border-none outline-none cursor-pointer"
+              onClick={() => navigate('/signup')}
+            >
+              Create one here
+            </button>
           </p>
         </div>
 
