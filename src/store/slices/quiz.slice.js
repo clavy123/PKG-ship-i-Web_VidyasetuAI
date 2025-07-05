@@ -70,7 +70,6 @@ const quizSlice = createSlice({
         state.error = null;
       })
       .addCase(generateQuizFromVideo.fulfilled, (state, action) => {
-        console.log("action-", action)
         state.loading = false;
         state.error = null;
         state.quizData =

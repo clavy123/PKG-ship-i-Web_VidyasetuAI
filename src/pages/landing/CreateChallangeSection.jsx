@@ -260,8 +260,6 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         payload.videoUrl = data.youtube;
         const resultAction = await dispatch(generateQuizFromVideo(payload));
 
-        console.log("resultAction-", resultAction);
-
         if (generateQuizFromVideo.rejected.match(resultAction)) {
           const errorMsg = resultAction.payload || "Quiz generation failed";
 
@@ -297,7 +295,6 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
       } else if (activeTab === "prompt") {
         payload.prompt = data.prompt;
         const resultAction = await dispatch(generateQuizFromPrompt(payload));
-        console.log("resultAction-", resultAction);
         if (generateQuizFromPrompt.rejected.match(resultAction)) {
           const errorMsg = resultAction.payload || "Quiz generation failed";
 
