@@ -7,13 +7,13 @@ import { toast } from "react-toastify";
 
 function Mcqs() {
   const { quizData } = useSelector((state) => state.quiz);
-  //   console.log("quizData-", quizData);
   const totalTime = useMemo(
     () => quizData?.questions?.length * 60 || 0,
     [quizData]
   );
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [timeLeft, setTimeLeft] = useState(() => {
     const saved = localStorage.getItem("quiz_time_left");
     return saved ? parseInt(saved, 10) : totalTime;
@@ -23,19 +23,26 @@ function Mcqs() {
     const saved = localStorage.getItem("quiz_current_question");
     return saved ? parseInt(saved, 10) : 0;
   });
+
   const [selectedOptions, setSelectedOptions] = useState(() => {
-    // Load from localStorage if available
     const saved = localStorage.getItem("quiz_selected_options");
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [quizStartTime] = useState(() => {
+    const saved = localStorage.getItem("quiz_start_time");
+    if (saved) return parseInt(saved, 10);
+    const now = Date.now();
+    localStorage.setItem("quiz_start_time", now);
+    return now;
+  });
+
   useEffect(() => {
     if (timeLeft <= 0) {
-      //   localStorage.removeItem("quiz_current_question");
-      //   localStorage.removeItem("quiz_selected_options");
-      //   localStorage.removeItem("quiz_time_left");
-      //   navigate("/result-card");
-      return;
+      localStorage.removeItem("quiz_current_question");
+      localStorage.removeItem("quiz_selected_options");
+      localStorage.removeItem("quiz_time_left");
+      // navigate("/result-card");
     }
 
     const timer = setInterval(() => {
@@ -47,7 +54,7 @@ function Mcqs() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, navigate]);
+  }, [navigate, timeLeft]);
 
   useEffect(() => {
     localStorage.setItem(
@@ -83,7 +90,11 @@ function Mcqs() {
     if (currentQuestion < quizData?.questions?.length - 1) {
       setCurrentQuestion((prev) => prev + 1);
     } else {
-      console.log("selected-", selectedOptions);
+      const totalQuizTimeTaken = Math.floor(
+        (Date.now() - quizStartTime) / 1000
+      );
+      console.log("Total quiz time (s):", totalQuizTimeTaken);
+
       const result = await dispatch(
         quizEvaluate({
           token: localStorage.getItem("quizToken"),
@@ -91,20 +102,17 @@ function Mcqs() {
             questionText: op.question,
             givenAnswer: op.selectedOption,
           })),
+          totalTimeTaken: totalQuizTimeTaken?.toString(),
         })
       );
-      console.log("res-", result);
       if (quizEvaluate.fulfilled.match(result)) {
         toast.success("Quiz evaluated successfully!");
         navigate("/result-card");
         localStorage.removeItem("quiz_selected_options");
         localStorage.removeItem("quiz_current_question");
+        localStorage.removeItem("quiz_time_left");
+        localStorage.removeItem("quiz_start_time");
       }
-      //   if(result)
-      //   localStorage.removeItem("quiz_current_question");
-      //   localStorage.removeItem("quiz_selected_options");
-      //   localStorage.removeItem("quiz_time_left");
-      //   navigate("/result-card");
     }
   }, [
     currentQuestion,
@@ -112,6 +120,7 @@ function Mcqs() {
     navigate,
     quizData?.questions?.length,
     selectedOptions,
+    quizStartTime,
   ]);
 
   const handlePrevious = useCallback(() => {

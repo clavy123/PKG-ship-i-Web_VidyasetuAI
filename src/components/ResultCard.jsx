@@ -1,45 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { quizEvaluate } from "../store/slices/quiz.slice.js";
+import { formatTime } from "../utils/helper.js";
 
 const ResultCard = () => {
   const quizToken = localStorage.getItem("quizToken");
   const dispatch = useDispatch();
   const { evaluateQuizData } = useSelector((state) => state.quiz);
-
-  // Example suggested videos (replace with real data as needed)
-  const suggestedVideos = [
-    {
-      title: "Newton's First Law Explained",
-      url: "https://www.youtube.com/watch?v=LX4JUscM9Sk",
-      thumbnail: "https://img.youtube.com/vi/1stLawVideo/hqdefault.jpg",
-    },
-    {
-      title: "Newton's Second Law in Real Life",
-      url: "https://www.youtube.com/watch?v=LX4JUscM9Sk",
-      thumbnail: "https://img.youtube.com/vi/2ndLawVideo/hqdefault.jpg",
-    },
-    {
-      title: "Newton's Third Law Animation",
-      url: "https://www.youtube.com/watch?v=LX4JUscM9Sk",
-      thumbnail: "https://img.youtube.com/vi/3rdLawVideo/hqdefault.jpg",
-    },
-    {
-      title: "Forces and Motion - Crash Course",
-      url: "https://www.youtube.com/watch?v=LX4JUscM9Sk",
-      thumbnail: "https://img.youtube.com/vi/crashCourse/hqdefault.jpg",
-    },
-    {
-      title: "Physics: What is Inertia?",
-      url: "https://www.youtube.com/watch?v=LX4JUscM9Sk",
-      thumbnail: "https://img.youtube.com/vi/inertiaVideo/hqdefault.jpg",
-    },
-    {
-      title: "Friction and Newton's Laws",
-      url: "https://www.youtube.com/watch?v=LX4JUscM9Sk",
-      thumbnail: "https://img.youtube.com/vi/frictionVideo/hqdefault.jpg",
-    },
-  ];
 
   useEffect(() => {
     if (quizToken) {
@@ -115,13 +82,14 @@ const ResultCard = () => {
                 {evaluateQuizData?.scorePercentage >= 50 ? "Pass" : "Fail"}
               </p>
             </div>
-            <div className="flex-1 min-w-[180px]">
-              <p className="text-gray-400">Completion Time</p>
-              <p className="text-gray-200">
-                {evaluateQuizData?.totalTimeTaken}{" "}
-                {/* <span className="text-sm text-gray-400">{resultData.date}</span> */}
-              </p>
-            </div>
+            {evaluateQuizData?.totalTimeTaken && (
+              <div className="flex-1 min-w-[180px]">
+                <p className="text-gray-400">Completion Time</p>
+                <p className="text-gray-200">
+                  {formatTime(evaluateQuizData?.totalTimeTaken)}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Progress Bar - Gamified */}
@@ -167,23 +135,62 @@ const ResultCard = () => {
                         Incorrect
                       </span>
                     </td>
-                    <td className="p-4 align-top">
-                      <button
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full text-xs font-semibold"
-                        onClick={() => {
-                          if (evaluateQuizData?.videoUrl) {
-                            window.open(
-                              `${evaluateQuizData?.videoUrl}&t=${q.timeStamp}s`,
-                              "_blank"
-                            );
-                          } else {
-                            window.open("https://www.youtube.com", "_blank");
-                          }
-                        }}
-                      >
-                        Play Video
-                      </button>
+                    {evaluateQuizData?.videoUrl && (
+                      <td className="p-4 align-top">
+                        <button
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full text-xs font-semibold"
+                          onClick={() => {
+                            if (evaluateQuizData?.videoUrl) {
+                              window.open(
+                                `${evaluateQuizData?.videoUrl}&t=${q.timeStamp}s`,
+                                "_blank"
+                              );
+                            } else {
+                              window.open("https://www.youtube.com", "_blank");
+                            }
+                          }}
+                        >
+                          Play Video
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+                {evaluateQuizData?.correctQuestions?.map((q, index) => (
+                  <tr key={index} className="border-t border-gray-700">
+                    <td className="p-4 align-top text-white w-1/4">
+                      {q.questionText}
                     </td>
+                    <td className="p-4 align-top text-white w-1/6">
+                      {q.givenAnswer}
+                    </td>
+                    <td className="p-4 align-top text-[#0FFFA9] w-1/6">
+                      {q.correctAnswer}
+                    </td>
+                    <td className="p-4 align-top">
+                      <span className="px-3 py-1 rounded-full bg-green-600 text-white text-xs">
+                        Correct
+                      </span>
+                    </td>
+                    {evaluateQuizData?.videoUrl && (
+                      <td className="p-4 align-top">
+                        <button
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full text-xs font-semibold"
+                          onClick={() => {
+                            if (evaluateQuizData?.videoUrl) {
+                              window.open(
+                                `${evaluateQuizData?.videoUrl}&t=${q.timeStamp}s`,
+                                "_blank"
+                              );
+                            } else {
+                              window.open("https://www.youtube.com", "_blank");
+                            }
+                          }}
+                        >
+                          Play Video
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -192,33 +199,35 @@ const ResultCard = () => {
         </div>
 
         {/* Sidebar: Suggested Videos */}
-        <aside className="w-full md:w-80 flex-shrink-0 mt-10 md:mt-0 md:ml-8">
-          <div className="bg-[#121a2f] border border-gray-700 rounded-xl p-4 mt-8 md:mt-24">
-            <h3 className="text-lg font-bold text-white mb-4">
-              Suggested Videos
-            </h3>
-            <div className="flex flex-col gap-4">
-              {suggestedVideos.map((video, idx) => (
-                <a
-                  key={idx}
-                  href={video.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 hover:bg-[#23244a] rounded-lg p-2 transition"
-                >
-                  <img
-                    src={video.thumbnail}
-                    alt={video.title}
-                    className="w-16 h-10 object-cover rounded"
-                  />
-                  <span className="text-sm text-white font-medium line-clamp-2">
-                    {video.title}
-                  </span>
-                </a>
-              ))}
+        {evaluateQuizData?.recommendations?.length && (
+          <aside className="w-full md:w-80 flex-shrink-0 mt-10 md:mt-0 md:ml-8">
+            <div className="bg-[#121a2f] border border-gray-700 rounded-xl p-4 mt-8 md:mt-24">
+              <h3 className="text-lg font-bold text-white mb-4">
+                Suggested Videos
+              </h3>
+              <div className="flex flex-col gap-4">
+                {evaluateQuizData?.recommendations.map((video, idx) => (
+                  <a
+                    key={idx}
+                    href={video.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 hover:bg-[#23244a] rounded-lg p-2 transition"
+                  >
+                    <img
+                      src={video.thumbnail}
+                      alt={video.title}
+                      className="w-16 h-10 object-cover rounded"
+                    />
+                    <span className="text-sm text-white font-medium line-clamp-2">
+                      {video.title}
+                    </span>
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
-        </aside>
+          </aside>
+        )}
       </div>
     </div>
   );

@@ -60,8 +60,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   const challengeModeToTypeId = {
     "multiple-choice": 1,
     "fill-in-the-blank": 2,
-    "true-false": 3,
-    "open-text": 4,
+    "true-false": 4,
   };
 
   // Language options
@@ -218,7 +217,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         name="youtube"
         control={control}
         type="url"
-        label="YouTube Video Link"
+        label="YouTube Video Link (Please select a video under 10 minutes)"
         placeholder="https://www.youtube.com/watch?v=..."
         rules={{ required: "YouTube link is required" }}
       />
@@ -258,24 +257,38 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
       if (activeTab === "youtube") {
         payload.videoUrl = data.youtube;
         const resultAction = await dispatch(generateQuizFromVideo(payload));
+
         console.log("resultAction-", resultAction);
-        // if (
-        //   resultAction?.type === "quiz/generateQuizFromVideo/rejected" ||
-        //   resultAction?.payload ===
-        //     "Found existing questionnaire and regenerated successfully"
-        // ) {
-        //   setQuizModalOpen(true);
-        //   return;
-        // }
-        if (resultAction?.payload?.statusCode === 200) {
-          toast.success("Quiz generated successfully!");
-          navigate("/mcqs");
-          localStorage.removeItem("quiz_selected_options");
-          localStorage.removeItem("quizData");
-        } else if (resultAction.payload) {
-          toast.error(resultAction.payload);
-        } else {
-          toast.error(error || "Quiz generation failed");
+
+        if (generateQuizFromVideo.rejected.match(resultAction)) {
+          const errorMsg = resultAction.payload || "Quiz generation failed";
+
+          if (
+            errorMsg ===
+            "Found existing questionnaire and regenerated successfully"
+          ) {
+            setQuizModalOpen(true);
+          } else {
+            toast.error(errorMsg);
+          }
+          return;
+        }
+
+        if (generateQuizFromVideo.fulfilled.match(resultAction)) {
+          const { statusCode, message, data } = resultAction.payload;
+
+          if (statusCode === 200) {
+            if (data?.questionnaireResponseModel?.questions?.length) {
+              toast.success("Quiz generated successfully!");
+              navigate("/mcqs");
+              localStorage.removeItem("quiz_selected_options");
+              localStorage.removeItem("quizData");
+            } else {
+              toast.error("Irrelevant prompt");
+            }
+          } else {
+            toast.error(message || "Quiz generation failed");
+          }
         }
       } else if (activeTab === "context") {
         payload.context = data.context;
@@ -283,36 +296,50 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         payload.prompt = data.prompt;
         const resultAction = await dispatch(generateQuizFromPrompt(payload));
         console.log("resultAction-", resultAction);
-        // if (
-        //   resultAction?.type === "quiz/generateQuizFromPrompt/rejected" ||
-        //   resultAction?.payload ===
-        //     "Found existing questionnaire and regenerated successfully"
-        // ) {
-        //   setQuizModalOpen(true);
-        //   return;
-        // }
-        if (resultAction?.payload?.statusCode === 200) {
-          toast.success("Quiz generated successfully!");
-          navigate("/mcqs");
-          localStorage.removeItem("quiz_selected_options");
-          localStorage.removeItem("quizData");
-        } else if (resultAction.payload) {
-          toast.error(resultAction.payload);
-        } else {
-          toast.error(error || "Quiz generation failed");
+        if (generateQuizFromPrompt.rejected.match(resultAction)) {
+          const errorMsg = resultAction.payload || "Quiz generation failed";
+
+          if (
+            errorMsg ===
+            "Found existing questionnaire and regenerated successfully"
+          ) {
+            setQuizModalOpen(true);
+          } else {
+            toast.error(errorMsg);
+          }
+          return;
+        }
+        if (generateQuizFromPrompt.fulfilled.match(resultAction)) {
+          const { statusCode, message, data } = resultAction.payload;
+
+          if (statusCode === 200) {
+            if (data?.questionnaireResponseModel?.questions?.length) {
+              toast.success("Quiz generated successfully!");
+              navigate("/mcqs");
+              localStorage.removeItem("quiz_selected_options");
+              localStorage.removeItem("quizData");
+            } else {
+              toast.error("Irrelevant prompt");
+            }
+          } else {
+            toast.error(message || "Quiz generation failed");
+          }
         }
       }
-      // setTimeout(() => {
-      //   localStorage.removeItem("quiz_selected_options");
-      //   localStorage.removeItem("quizData");
-      //   navigate("/mcqs");
-      // }, 2000);
     }
   };
 
   const closeQuizModal = useCallback(() => {
     setQuizModalOpen(false);
   }, []);
+
+  const generateNewQuiz = useCallback(() => {
+    closeQuizModal();
+    toast.success("Quiz generated successfully!");
+    navigate("/mcqs");
+    localStorage.removeItem("quiz_selected_options");
+    localStorage.removeItem("quizData");
+  }, [closeQuizModal, navigate]);
 
   if (!isTitleDisplay) {
     return (
@@ -428,6 +455,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                 label="Select Language"
                 options={languageTypeOptions}
                 rules={{ required: "Language is required" }}
+                disabled
               />
               <FormSelect
                 name="difficulty"
@@ -617,6 +645,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                   label="Select Language"
                   options={languageTypeOptions}
                   rules={{ required: "Language is required" }}
+                  disabled
                 />
                 <FormSelect
                   name="difficulty"
@@ -653,6 +682,29 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
           </form>
         </div>
       </div>
+
+      <Modal open={quizModalOpen} onClose={closeQuizModal}>
+        <div className="bg-gray-900 rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-md mx-auto">
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 text-center">
+            Are you sure you want to generate the same quiz again?
+          </h3>
+
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              onClick={closeQuizModal}
+              className="px-6 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-medium transition"
+            >
+              No
+            </button>
+            <button
+              onClick={generateNewQuiz} // Define this function to trigger the action
+              className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] hover:opacity-90 text-white font-semibold transition"
+            >
+              Yes
+            </button>
+          </div>
+        </div>
+      </Modal>
     </section>
   );
 };
