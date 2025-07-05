@@ -14,6 +14,7 @@ const ResultCard = () => {
       dispatch(
         quizEvaluate({
           token: localStorage.getItem("quizToken"),
+          totalTimeTaken: localStorage.getItem("totalTimeTaken"),
         })
       );
     }
@@ -21,9 +22,7 @@ const ResultCard = () => {
 
   return (
     <div className="min-h-screen bg-[#0b1120] text-white p-8">
-      {loading && (
-        <CustomLoader />
-      )}
+      {loading && <CustomLoader />}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
         {/* Main Content and Sidebar */}
         <div className="flex-1">

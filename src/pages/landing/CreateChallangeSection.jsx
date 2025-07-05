@@ -184,7 +184,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
           name="prompt"
           control={control}
           label="Prompt"
-          placeholder="Enter your prompt..."
+          placeholder="What is probability?"
           minLength={15}
           maxLength={50}
           rules={{

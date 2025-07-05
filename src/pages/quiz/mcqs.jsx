@@ -107,6 +107,7 @@ function Mcqs() {
       if (quizEvaluate.fulfilled.match(result)) {
         toast.success("Quiz evaluated successfully!");
         navigate("/result-card");
+        localStorage.setItem("totalTimeTaken", totalQuizTimeTaken);
         localStorage.removeItem("quiz_selected_options");
         localStorage.removeItem("quiz_current_question");
         localStorage.removeItem("quiz_time_left");
