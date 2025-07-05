@@ -42,7 +42,7 @@ function Mcqs() {
       localStorage.removeItem("quiz_current_question");
       localStorage.removeItem("quiz_selected_options");
       localStorage.removeItem("quiz_time_left");
-      // navigate("/result-card");
+      navigate("/result-card");
     }
 
     const timer = setInterval(() => {

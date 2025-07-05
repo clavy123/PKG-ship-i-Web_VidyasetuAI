@@ -51,7 +51,7 @@ export const StatsSection = () => {
         ))}
       </section>
       <button
-        className="mt-10 mb-10 inline-flex items-center gap-3 bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 text-white font-bold py-4 px-10 rounded-full shadow-lg hover:scale-105 transition-transform text-lg"
+        className="mt-10 mb-10 inline-flex items-center gap-3 bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white font-bold py-4 px-10 rounded-full shadow-lg hover:scale-105 transition-transform text-lg"
         onClick={handleOpenModal}
       >
         <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">

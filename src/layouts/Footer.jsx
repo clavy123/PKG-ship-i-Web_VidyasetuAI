@@ -60,9 +60,9 @@ export const Footer = () => {
             </a>
           </div>
         </div>
-        <div className="flex justify-center items-center w-full h-6 border-0 border border-solid bg-black bg-opacity-0">
+        <div className="flex justify-center items-center w-full h-6 border-0 border-solid bg-black bg-opacity-0">
           <p className="text-base leading-6 text-center text-gray-400">
-            © 2024 VidyaSetu. Level up your learning experience.
+            © 2025 VidyaSetu. Level up your learning experience.
           </p>
         </div>
       </div>

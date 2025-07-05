@@ -223,8 +223,17 @@ function Signup() {
                 </span>
               )}
             </button>
+            
+            <button
+              type="button"
+              className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded mb-4 mt-5 disabled:opacity-60 flex items-center justify-center gap-2"
+              onClick={() => navigate("/")}
+            >
+              <i className="fas fa-sign-in-alt mr-2"></i>
+              <span>Back To Home</span>
+            </button>
 
-            <p className="mt-6 text-sm text-center text-gray-400">
+            <p className="mt-3 text-sm text-center text-gray-400">
               Already have an account?
               <button
                 type="button"

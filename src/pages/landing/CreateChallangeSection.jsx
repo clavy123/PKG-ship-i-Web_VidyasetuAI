@@ -89,8 +89,8 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
     () => [
       { id: "youtube", label: "YouTube Video", disabled: false },
       { id: "prompt", label: "Prompt", disabled: false },
-      { id: "context", label: "Context", disabled: true },
-      { id: "pdf", label: "Upload PDF", disabled: true },
+      // { id: "context", label: "Context", disabled: true },
+      { id: "pdf", label: "Upload Files", disabled: true },
     ],
     []
   );
@@ -333,13 +333,13 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
     setQuizModalOpen(false);
   }, []);
 
-  const generateNewQuiz = useCallback(() => {
-    closeQuizModal();
-    toast.success("Quiz generated successfully!");
-    navigate("/mcqs");
-    localStorage.removeItem("quiz_selected_options");
-    localStorage.removeItem("quizData");
-  }, [closeQuizModal, navigate]);
+  // const generateNewQuiz = useCallback(() => {
+  //   closeQuizModal();
+  //   toast.success("Quiz generated successfully!");
+  //   navigate("/mcqs");
+  //   localStorage.removeItem("quiz_selected_options");
+  //   localStorage.removeItem("quizData");
+  // }, [closeQuizModal, navigate]);
 
   if (!isTitleDisplay) {
     return (
@@ -362,7 +362,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                         : "bg-gray-900 text-gray-300"
                     }`}
                     onClick={() => {
-                      if(tab.disabled) return;
+                      if (tab.disabled) return;
                       setValue("activeTab", tab.id);
                       setValue("pdf", "");
                       setValue("youtube", "");
@@ -517,13 +517,16 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                     <button
                       key={tab.id}
                       type="button"
-                      className={`px-6 py-2 rounded-full font-semibold transition-colors ${tab.disabled && 'cursor-not-allowed'} ${
+                      className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+                        tab.disabled && "cursor-not-allowed"
+                      } ${
                         activeTab === tab.id
                           ? "bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white"
                           : "bg-gray-900 text-gray-300"
                       }`}
+                      title={tab.disabled ? "Coming Soon" : ""}
                       onClick={() => {
-                        if(tab.disabled) return;
+                        if (tab.disabled) return;
                         setValue("activeTab", tab.id);
                         setValue("pdf", "");
                         setValue("youtube", "");
@@ -661,19 +664,20 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               {/* Generate Quiz Button */}
               <div className="flex justify-center items-center border-0 border-solid bg-black bg-opacity-0 w-full">
                 <button
-                  className="flex items-center justify-center gap-3 px-10 py-4 rounded-full text-white text-xl font-extrabold tracking-wide shadow-lg transition-all duration-200 bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] hover:scale-105 hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-400 w-[329px] max-sm:w-full max-sm:max-w-[280px]"
+                  className="flex items-center justify-center gap-3 px-10 py-4 rounded-full text-white text-xl font-extrabold tracking-wide shadow-lg transition-all duration-200 bg-gradient-to-r from-[#ff073a] to-[#667eea]  hover:scale-105 hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-400 w-[329px] max-sm:w-full max-sm:max-w-[280px]"
                   type="submit"
                 >
                   <ICONS.IconCheckCircle
                     className="text-black"
                     style={{ minWidth: 24, minHeight: 24 }}
                     size={24}
+                    color="#fff"
                   />
                   <span
-                    className="bg-clip-text text-transparent bg-gradient-to-r from-[#0A0A23] via-[#0A0A23] to-[#ff073a] font-extrabold text-xl tracking-wide"
+                    className="bg-clip-text text-transparent bg-gradient-to-r from-[#ff073a] to-[#667eea] font-extrabold text-xl tracking-wide"
                     style={{
                       WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
+                      WebkitTextFillColor: "white",
                     }}
                   >
                     GENERATE QUIZ
@@ -685,11 +689,16 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         </div>
       </div>
 
-      {loading && (
-        <CustomLoader />
-      )}
+      {loading && <CustomLoader />}
 
       <Modal open={quizModalOpen} onClose={closeQuizModal}>
+        <button
+          className="absolute top-4 right-4 text-white hover:text-red-400 transition"
+          onClick={closeQuizModal}
+          aria-label="Close"
+        >
+          <ICONS.IconCancel size={24} />
+        </button>
         <div className="bg-gray-900 rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-md mx-auto">
           <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 text-center">
             Are you sure you want to generate the same quiz again?

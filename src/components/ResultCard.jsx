@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { quizEvaluate } from "../store/slices/quiz.slice.js";
 import { formatTime } from "../utils/helper.js";
 import CustomLoader from "./CustomLoader.jsx";
-import { useWindowSize } from 'react-use'
-import Confetti from 'react-confetti'
+import { useWindowSize } from "react-use";
+import Confetti from "react-confetti";
 
 const ResultCard = () => {
+  const [showConfetti, setShowConfetti] = useState(false);
   const quizToken = localStorage.getItem("quizToken");
   const { width, height } = useWindowSize();
   const navigate = useNavigate();
@@ -25,9 +26,18 @@ const ResultCard = () => {
     }
   }, [dispatch, quizToken]);
 
+  useEffect(() => {
+    if (evaluateQuizData?.scorePercentage >= 50) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [evaluateQuizData]);
+
   return (
     <div className="min-h-screen bg-[#0b1120] text-white p-8">
       {loading && <CustomLoader />}
+      {showConfetti && <Confetti width={width} height={height} />}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
         {/* Main Content and Sidebar */}
         <div className="flex-1">
@@ -65,9 +75,12 @@ const ResultCard = () => {
                   </span>
                 )}
               {evaluateQuizData?.scorePercentage <= 50 && (
-                <button className="bg-red-400 text-red-900 px-2 py-1 rounded-full text-xs font-bold shadow" onClick={() => navigate("/mcqs")}>
+                <span
+                  className="bg-red-400 text-red-900 px-2 py-1 rounded-full text-xs font-bold shadow"
+                  // onClick={() => navigate("/mcqs")}
+                >
                   Try Again! 😢
-                </button>
+                </span>
               )}
               {evaluateQuizData?.scorePercentage === 100 && (
                 <span className="bg-green-400 text-green-900 px-2 py-1 rounded-full text-xs font-bold shadow">
@@ -211,17 +224,21 @@ const ResultCard = () => {
           {/* Redirect Buttons */}
           <div className="flex justify-center gap-4 my-8">
             <button
-              className="px-6 py-2 rounded-lg font-semibold transition-colors bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-white"
+              className="px-6 py-2 rounded-lg font-semibold transition-colors bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white"
               onClick={() =>
-                navigate("/summary", { state: { summary: evaluateQuizData?.summary } })
+                navigate("/summary", {
+                  state: { summary: evaluateQuizData?.summary },
+                })
               }
             >
               See Summary
             </button>
             <button
-              className="px-6 py-2 rounded-lg font-semibold transition-colors bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-white"
+              className="px-6 py-2 rounded-lg font-semibold transition-colors bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white"
               onClick={() =>
-                navigate("/flashcards", { state: { flashcards: evaluateQuizData?.flashcards } })
+                navigate("/flashcards", {
+                  state: { flashcards: evaluateQuizData?.flashcards },
+                })
               }
             >
               See Flashcards
