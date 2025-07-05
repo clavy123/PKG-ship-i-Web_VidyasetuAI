@@ -8,6 +8,8 @@ import LandingPage from "../pages/user/Landing";
 import Mcqs from "../pages/quiz/mcqs";
 import ResultCard from "../components/ResultCard";
 import Truefalse from "../pages/quiz/truefalse";
+import SummaryPage from "../pages/landing/SummaryPage";
+import FlashcardsPage from "../pages/landing/FlashcardsPage";
 
 const isAuthenticated = () => !!localStorage.getItem("token");
 
@@ -51,6 +53,16 @@ export const COMMON_ROUTES = [
         name: "TrueFalse",
         path: "/true-false",
         element: <Truefalse />,
+      },
+      {
+        name: "Summary",
+        path: "/summary",
+        element: <SummaryPage />,
+      },
+      {
+        name: "flashcards",
+        path: "/flashcards",
+        element: <FlashcardsPage />,
       },
     ],
   },

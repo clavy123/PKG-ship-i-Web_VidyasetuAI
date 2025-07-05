@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { quizEvaluate } from "../store/slices/quiz.slice.js";
 import { formatTime } from "../utils/helper.js";
 
 const ResultCard = () => {
   const quizToken = localStorage.getItem("quizToken");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { evaluateQuizData } = useSelector((state) => state.quiz);
 
@@ -195,6 +197,25 @@ const ResultCard = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+            {/* Redirect Buttons */}
+          <div className="flex justify-center gap-4 my-8">
+            <button
+              className="px-6 py-2 rounded-lg font-semibold transition-colors bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-white"
+              onClick={() =>
+                navigate("/summary", { state: { summary: evaluateQuizData?.summary } })
+              }
+            >
+              See Summary
+            </button>
+            <button
+              className="px-6 py-2 rounded-lg font-semibold transition-colors bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-white"
+              onClick={() =>
+                navigate("/flashcards", { state: { flashcards: evaluateQuizData?.flashcards } })
+              }
+            >
+              See Flashcards
+            </button>
           </div>
         </div>
 
