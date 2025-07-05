@@ -93,7 +93,6 @@ function Mcqs() {
       const totalQuizTimeTaken = Math.floor(
         (Date.now() - quizStartTime) / 1000
       );
-      console.log("Total quiz time (s):", totalQuizTimeTaken);
 
       const result = await dispatch(
         quizEvaluate({

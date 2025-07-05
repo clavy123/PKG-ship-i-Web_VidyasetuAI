@@ -8,10 +8,10 @@ import { store } from "./store";
 function App() {
   return (
     <>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-      <ToastContainer closeOnClick />
-    </Provider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+        <ToastContainer closeOnClick />
+      </Provider>
     </>
   );
 }

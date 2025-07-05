@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import Modal from "../../components/Modal";
+import CustomLoader from "../../components/CustomLoader";
 
 export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   const navigate = useNavigate();
@@ -86,10 +87,10 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   // Tabs
   const tabs = useMemo(
     () => [
-      { id: "youtube", label: "YouTube Video" },
-      { id: "prompt", label: "Prompt" },
-      { id: "context", label: "Context" },
-      { id: "pdf", label: "Upload PDF" },
+      { id: "youtube", label: "YouTube Video", disabled: false },
+      { id: "prompt", label: "Prompt", disabled: false },
+      { id: "context", label: "Context", disabled: true },
+      { id: "pdf", label: "Upload PDF", disabled: true },
     ],
     []
   );
@@ -184,9 +185,11 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
           control={control}
           label="Prompt"
           placeholder="Enter your prompt..."
+          minLength={15}
           maxLength={50}
           rules={{
             required: "Prompt is required",
+            minLength: { value: 15, message: "Minimum 15 characters required" },
             maxLength: { value: 50, message: "Maximum 50 characters allowed" },
           }}
           rows={2}
@@ -258,8 +261,6 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         payload.videoUrl = data.youtube;
         const resultAction = await dispatch(generateQuizFromVideo(payload));
 
-        console.log("resultAction-", resultAction);
-
         if (generateQuizFromVideo.rejected.match(resultAction)) {
           const errorMsg = resultAction.payload || "Quiz generation failed";
 
@@ -295,7 +296,6 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
       } else if (activeTab === "prompt") {
         payload.prompt = data.prompt;
         const resultAction = await dispatch(generateQuizFromPrompt(payload));
-        console.log("resultAction-", resultAction);
         if (generateQuizFromPrompt.rejected.match(resultAction)) {
           const errorMsg = resultAction.payload || "Quiz generation failed";
 
@@ -362,6 +362,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                         : "bg-gray-900 text-gray-300"
                     }`}
                     onClick={() => {
+                      if(tab.disabled) return;
                       setValue("activeTab", tab.id);
                       setValue("pdf", "");
                       setValue("youtube", "");
@@ -391,7 +392,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               rules={{
                 required: "Number of questions is required",
                 min: { value: 1, message: "At least 1 question required" },
-                max: { value: 50, message: "Maximum 50 questions allowed" },
+                max: { value: 10, message: "Maximum 10 questions allowed" },
               }}
             />
 
@@ -516,12 +517,13 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                     <button
                       key={tab.id}
                       type="button"
-                      className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+                      className={`px-6 py-2 rounded-full font-semibold transition-colors ${tab.disabled && 'cursor-not-allowed'} ${
                         activeTab === tab.id
                           ? "bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white"
                           : "bg-gray-900 text-gray-300"
                       }`}
                       onClick={() => {
+                        if(tab.disabled) return;
                         setValue("activeTab", tab.id);
                         setValue("pdf", "");
                         setValue("youtube", "");
@@ -551,7 +553,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                 rules={{
                   required: "Number of questions is required",
                   min: { value: 1, message: "At least 1 question required" },
-                  max: { value: 50, message: "Maximum 50 questions allowed" },
+                  max: { value: 10, message: "Maximum 10 questions allowed" },
                 }}
               />
 
@@ -683,6 +685,10 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         </div>
       </div>
 
+      {loading && (
+        <CustomLoader />
+      )}
+
       <Modal open={quizModalOpen} onClose={closeQuizModal}>
         <div className="bg-gray-900 rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-md mx-auto">
           <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 text-center">
@@ -690,17 +696,17 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
           </h3>
 
           <div className="flex justify-center gap-4 mt-6">
-            <button
+            {/* <button
               onClick={closeQuizModal}
               className="px-6 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-medium transition"
             >
               No
-            </button>
+            </button> */}
             <button
-              onClick={generateNewQuiz} // Define this function to trigger the action
+              onClick={closeQuizModal} // Define this function to trigger the action
               className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] hover:opacity-90 text-white font-semibold transition"
             >
-              Yes
+              Ok
             </button>
           </div>
         </div>
