@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import Modal from "../../components/Modal";
+import CustomLoader from "../../components/CustomLoader";
 
 export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   const navigate = useNavigate();
@@ -684,6 +685,10 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         </div>
       </div>
 
+      {loading && (
+        <CustomLoader />
+      )}
+
       <Modal open={quizModalOpen} onClose={closeQuizModal}>
         <div className="bg-gray-900 rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-md mx-auto">
           <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 text-center">
@@ -691,17 +696,17 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
           </h3>
 
           <div className="flex justify-center gap-4 mt-6">
-            <button
+            {/* <button
               onClick={closeQuizModal}
               className="px-6 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-medium transition"
             >
               No
-            </button>
+            </button> */}
             <button
-              onClick={generateNewQuiz} // Define this function to trigger the action
+              onClick={closeQuizModal} // Define this function to trigger the action
               className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] hover:opacity-90 text-white font-semibold transition"
             >
-              Yes
+              Ok
             </button>
           </div>
         </div>

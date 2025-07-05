@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { quizEvaluate } from "../store/slices/quiz.slice.js";
 import { formatTime } from "../utils/helper.js";
+import CustomLoader from "./CustomLoader.jsx";
 
 const ResultCard = () => {
   const quizToken = localStorage.getItem("quizToken");
   const dispatch = useDispatch();
-  const { evaluateQuizData } = useSelector((state) => state.quiz);
+  const { evaluateQuizData, loading } = useSelector((state) => state.quiz);
 
   useEffect(() => {
     if (quizToken) {
@@ -20,6 +21,9 @@ const ResultCard = () => {
 
   return (
     <div className="min-h-screen bg-[#0b1120] text-white p-8">
+      {loading && (
+        <CustomLoader />
+      )}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
         {/* Main Content and Sidebar */}
         <div className="flex-1">
