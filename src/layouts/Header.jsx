@@ -12,6 +12,8 @@ export const Header = () => {
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem("token");
+    localStorage.removeItem("quizToken");
+    localStorage.removeItem("totalTimeTaken");
     navigate("/login");
   };
 

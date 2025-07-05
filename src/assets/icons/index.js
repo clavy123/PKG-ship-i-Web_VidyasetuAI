@@ -1,5 +1,5 @@
-import { TbCpu, TbUser, TbEyeOff, TbEye } from "react-icons/tb";
-import { FaCheckCircle } from "react-icons/fa";
+import { TbCpu, TbUser, TbEyeOff, TbEye, TbCross } from "react-icons/tb";
+import { FaCheckCircle, FaArrowLeft, FaTimes } from "react-icons/fa";
 
 export const ICONS = {
   IconCPu: TbCpu,
@@ -7,4 +7,6 @@ export const ICONS = {
   IconEyeOff: TbEyeOff,
   IconEye: TbEye,
   IconCheckCircle: FaCheckCircle,
+  IconArrowBack: FaArrowLeft,
+  IconCancel: FaTimes,
 };

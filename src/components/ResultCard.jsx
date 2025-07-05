@@ -19,6 +19,7 @@ const ResultCard = () => {
       dispatch(
         quizEvaluate({
           token: localStorage.getItem("quizToken"),
+          totalTimeTaken: localStorage.getItem("totalTimeTaken"),
         })
       );
     }
@@ -26,12 +27,7 @@ const ResultCard = () => {
 
   return (
     <div className="min-h-screen bg-[#0b1120] text-white p-8">
-      {loading && (
-        <CustomLoader />
-      )}
-      {evaluateQuizData?.scorePercentage >= 50 && (
-        <Confetti width={width} height={height} />
-      )}
+      {loading && <CustomLoader />}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
         {/* Main Content and Sidebar */}
         <div className="flex-1">
@@ -69,9 +65,9 @@ const ResultCard = () => {
                   </span>
                 )}
               {evaluateQuizData?.scorePercentage <= 50 && (
-                <span className="bg-red-400 text-red-900 px-2 py-1 rounded-full text-xs font-bold shadow">
+                <button className="bg-red-400 text-red-900 px-2 py-1 rounded-full text-xs font-bold shadow" onClick={() => navigate("/mcqs")}>
                   Try Again! 😢
-                </span>
+                </button>
               )}
               {evaluateQuizData?.scorePercentage === 100 && (
                 <span className="bg-green-400 text-green-900 px-2 py-1 rounded-full text-xs font-bold shadow">
