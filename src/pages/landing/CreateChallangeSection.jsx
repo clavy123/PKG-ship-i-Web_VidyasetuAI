@@ -86,10 +86,10 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   // Tabs
   const tabs = useMemo(
     () => [
-      { id: "youtube", label: "YouTube Video" },
-      { id: "prompt", label: "Prompt" },
-      { id: "context", label: "Context" },
-      { id: "pdf", label: "Upload PDF" },
+      { id: "youtube", label: "YouTube Video", disabled: false },
+      { id: "prompt", label: "Prompt", disabled: false },
+      { id: "context", label: "Context", disabled: true },
+      { id: "pdf", label: "Upload PDF", disabled: true },
     ],
     []
   );
@@ -184,9 +184,11 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
           control={control}
           label="Prompt"
           placeholder="Enter your prompt..."
+          minLength={15}
           maxLength={50}
           rules={{
             required: "Prompt is required",
+            minLength: { value: 15, message: "Minimum 15 characters required" },
             maxLength: { value: 50, message: "Maximum 50 characters allowed" },
           }}
           rows={2}
@@ -362,6 +364,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                         : "bg-gray-900 text-gray-300"
                     }`}
                     onClick={() => {
+                      if(tab.disabled) return;
                       setValue("activeTab", tab.id);
                       setValue("pdf", "");
                       setValue("youtube", "");
@@ -391,7 +394,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               rules={{
                 required: "Number of questions is required",
                 min: { value: 1, message: "At least 1 question required" },
-                max: { value: 50, message: "Maximum 50 questions allowed" },
+                max: { value: 10, message: "Maximum 10 questions allowed" },
               }}
             />
 
@@ -516,12 +519,13 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                     <button
                       key={tab.id}
                       type="button"
-                      className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+                      className={`px-6 py-2 rounded-full font-semibold transition-colors ${tab.disabled && 'cursor-not-allowed'} ${
                         activeTab === tab.id
                           ? "bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white"
                           : "bg-gray-900 text-gray-300"
                       }`}
                       onClick={() => {
+                        if(tab.disabled) return;
                         setValue("activeTab", tab.id);
                         setValue("pdf", "");
                         setValue("youtube", "");
@@ -551,7 +555,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                 rules={{
                   required: "Number of questions is required",
                   min: { value: 1, message: "At least 1 question required" },
-                  max: { value: 50, message: "Maximum 50 questions allowed" },
+                  max: { value: 10, message: "Maximum 10 questions allowed" },
                 }}
               />
 

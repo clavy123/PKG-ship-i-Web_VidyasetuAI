@@ -28,10 +28,12 @@ const ResultCard = () => {
             Results for:{" "}
             <span className="text-white font-semibold">{resultData.user}</span>{" "}
             - 23 seconds ago
-          </h2>
-          <h1 className="text-3xl font-bold text-white mb-6">
-            {resultData.quizTitle}
-          </h1> */}
+          </h2> */}
+          {evaluateQuizData?.title && (
+            <h1 className="text-3xl font-bold text-white mb-6">
+              {evaluateQuizData.title}
+            </h1>
+          )}
 
           {/* Summary - Responsive + Gamification Badges */}
           <div className="w-full bg-[#121a2f] border border-gray-700 rounded-xl p-6 mb-10 flex flex-col sm:flex-row flex-wrap gap-6 sm:gap-0 items-stretch sm:items-center justify-between relative">
@@ -115,7 +117,9 @@ const ResultCard = () => {
                   <th className="p-4 font-semibold">Your Answer</th>
                   <th className="p-4 font-semibold">Correct Answer</th>
                   <th className="p-4 font-semibold">Result</th>
-                  <th className="p-4 font-semibold">Rewatch Explanation</th>
+                  {evaluateQuizData?.videoUrl && (
+                    <th className="p-4 font-semibold">Rewatch Explanation</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -201,7 +205,7 @@ const ResultCard = () => {
         {/* Sidebar: Suggested Videos */}
         {evaluateQuizData?.recommendations?.length && (
           <aside className="w-full md:w-80 flex-shrink-0 mt-10 md:mt-0 md:ml-8">
-            <div className="bg-[#121a2f] border border-gray-700 rounded-xl p-4 mt-8 md:mt-24">
+            <div className="bg-[#121a2f] border border-gray-700 rounded-xl p-4 mt-8 md:mt-14">
               <h3 className="text-lg font-bold text-white mb-4">
                 Suggested Videos
               </h3>
