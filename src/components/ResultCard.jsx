@@ -4,9 +4,12 @@ import { useNavigate } from "react-router";
 import { quizEvaluate } from "../store/slices/quiz.slice.js";
 import { formatTime } from "../utils/helper.js";
 import CustomLoader from "./CustomLoader.jsx";
+import { useWindowSize } from 'react-use'
+import Confetti from 'react-confetti'
 
 const ResultCard = () => {
   const quizToken = localStorage.getItem("quizToken");
+  const { width, height } = useWindowSize();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { evaluateQuizData, loading } = useSelector((state) => state.quiz);
@@ -25,6 +28,9 @@ const ResultCard = () => {
     <div className="min-h-screen bg-[#0b1120] text-white p-8">
       {loading && (
         <CustomLoader />
+      )}
+      {evaluateQuizData?.scorePercentage >= 50 && (
+        <Confetti width={width} height={height} />
       )}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
         {/* Main Content and Sidebar */}
@@ -206,7 +212,7 @@ const ResultCard = () => {
               </tbody>
             </table>
           </div>
-            {/* Redirect Buttons */}
+          {/* Redirect Buttons */}
           <div className="flex justify-center gap-4 my-8">
             <button
               className="px-6 py-2 rounded-lg font-semibold transition-colors bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-white"
