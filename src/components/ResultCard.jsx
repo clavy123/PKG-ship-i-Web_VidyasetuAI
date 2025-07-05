@@ -62,9 +62,9 @@ const ResultCard = () => {
                   </span>
                 )}
               {evaluateQuizData?.scorePercentage <= 50 && (
-                <span className="bg-red-400 text-red-900 px-2 py-1 rounded-full text-xs font-bold shadow">
+                <button className="bg-red-400 text-red-900 px-2 py-1 rounded-full text-xs font-bold shadow" onClick={() => navigate("/mcqs")}>
                   Try Again! 😢
-                </span>
+                </button>
               )}
               {evaluateQuizData?.scorePercentage === 100 && (
                 <span className="bg-green-400 text-green-900 px-2 py-1 rounded-full text-xs font-bold shadow">
