@@ -1,10 +1,15 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import LoginPage from "../pages/auth/Login";
 import SignupPage from "../pages/auth/Signup";
-import HomePage from "../pages/home";
+import HomePage from "../pages/home/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import DefaultLayout from "../layouts/DefaultLayout";
 import LandingPage from "../pages/user/Landing";
+import Mcqs from "../pages/quiz/mcqs";
+import ResultCard from "../components/ResultCard";
+import Truefalse from "../pages/quiz/truefalse";
+import SummaryPage from "../pages/landing/SummaryPage";
+import FlashcardsPage from "../pages/landing/FlashcardsPage";
 
 const isAuthenticated = () => !!localStorage.getItem("token");
 
@@ -15,8 +20,8 @@ export const AUTH_ROUTES = [
     element: <LoginPage />,
   },
   {
-    name: "Register",
-    path: "/register",
+    name: "Signup",
+    path: "/signup",
     element: <SignupPage />,
   },
 ];
@@ -30,9 +35,35 @@ export const COMMON_ROUTES = [
       {
         name: "RootPage",
         path: "",
-        element: isAuthenticated() ? <LandingPage /> : <HomePage />,
+        // element: isAuthenticated() ? <LandingPage /> : <HomePage />,
+        element: <HomePage />,
       },
       // Add more child routes here
+      {
+        name: "Mcqs",
+        path: "/mcqs",
+        element: <Mcqs />,
+      },
+      {
+        name: "ResultCard",
+        path: "/result-card",
+        element: <ResultCard />,
+      },
+      {
+        name: "TrueFalse",
+        path: "/true-false",
+        element: <Truefalse />,
+      },
+      {
+        name: "Summary",
+        path: "/summary",
+        element: <SummaryPage />,
+      },
+      {
+        name: "flashcards",
+        path: "/flashcards",
+        element: <FlashcardsPage />,
+      },
     ],
   },
   {

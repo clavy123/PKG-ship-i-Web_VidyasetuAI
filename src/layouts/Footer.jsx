@@ -1,28 +1,19 @@
 import React from "react";
+import { ICONS } from "../assets/icons";
 
 export const Footer = () => {
   return (
-    <footer className="flex justify-center items-center px-36 pt-12 pb-12 w-full border-t border-solid bg-black bg-opacity-0 border-t-gray-800 h-[193px] max-md:px-10 max-md:pt-12 max-md:pb-12 max-sm:px-5 max-sm:py-10 max-sm:h-auto">
+    <footer className="flex justify-center items-center px-36 pt-12 pb-12 w-full border-t border-solid border-t-gray-800 h-[193px] max-md:px-10 max-md:pt-12 max-md:pb-12 max-sm:px-5 max-sm:py-10 max-sm:h-auto" style={{ background: '#0A0A23' }}>
       <div className="flex flex-col gap-8 justify-center items-start h-24 border-0 border border-solid bg-black bg-opacity-0 w-[1152px] max-md:w-full max-sm:gap-6 max-sm:h-auto">
         <div className="flex justify-between items-center w-full h-10 border-0 border border-solid bg-black bg-opacity-0 max-sm:flex-col max-sm:gap-5 max-sm:items-center max-sm:h-auto">
           <div className="flex gap-3 items-center w-40 h-10 border-0 border border-solid bg-black bg-opacity-0 max-sm:w-auto">
-            <div className="flex justify-center items-center px-3 pt-3 pb-3.5 w-10 h-10 rounded-lg border-0 border border-solid bg-white">
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px; flex-shrink: 0">
-                    <g clip-path="url(#clip0_7_135)">
-                      <path d="M5.75 0C6.71562 0 7.5 0.784375 7.5 1.75V14.25C7.5 15.2156 6.71562 16 5.75 16C4.84688 16 4.10313 15.3156 4.00938 14.4344C3.84688 14.4781 3.675 14.5 3.5 14.5C2.39687 14.5 1.5 13.6031 1.5 12.5C1.5 12.2688 1.54062 12.0437 1.6125 11.8375C0.66875 11.4812 0 10.5688 0 9.5C0 8.50313 0.584375 7.64062 1.43125 7.24062C1.15937 6.9 1 6.46875 1 6C1 5.04063 1.675 4.24062 2.575 4.04375C2.525 3.87187 2.5 3.6875 2.5 3.5C2.5 2.56562 3.14375 1.77813 4.00938 1.55938C4.10313 0.684375 4.84688 0 5.75 0ZM10.25 0C11.1531 0 11.8938 0.684375 11.9906 1.55938C12.8594 1.77813 13.5 2.5625 13.5 3.5C13.5 3.6875 13.475 3.87187 13.425 4.04375C14.325 4.2375 15 5.04063 15 6C15 6.46875 14.8406 6.9 14.5688 7.24062C15.4156 7.64062 16 8.50313 16 9.5C16 10.5688 15.3313 11.4812 14.3875 11.8375C14.4594 12.0437 14.5 12.2688 14.5 12.5C14.5 13.6031 13.6031 14.5 12.5 14.5C12.325 14.5 12.1531 14.4781 11.9906 14.4344C11.8969 15.3156 11.1531 16 10.25 16C9.28438 16 8.5 15.2156 8.5 14.25V1.75C8.5 0.784375 9.28438 0 10.25 0Z" fill="white"/>
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_7_135">
-                        <path d="M0 0H16V16H0V0Z" fill="white"/>
-                      </clipPath>
-                    </defs>
-                  </svg>`,
-                }}
-              />
+        
+            <div className="flex gap-3 items-center h-12 border-0 border-solid bg-black bg-opacity-0">
+              <ICONS.IconCPu size={30} color="#fff" />
+              <h1 className="text-2xl leading-8 max-sm:text-xl max-sm:leading-6 bg-gradient-to-r from-[#39ff14] to-[#667eea] bg-clip-text text-transparent">
+                VidyaSetu
+              </h1>
             </div>
-            <h3 className="text-xl leading-7 text-white">QuizCraft</h3>
           </div>
           <div className="flex gap-6 justify-center items-start px-0 pt-1 pb-1 w-28 h-7 border-0 border border-solid bg-black bg-opacity-0 max-sm:w-auto">
             <a href="#" aria-label="Twitter">
@@ -69,9 +60,9 @@ export const Footer = () => {
             </a>
           </div>
         </div>
-        <div className="flex justify-center items-center w-full h-6 border-0 border border-solid bg-black bg-opacity-0">
+        <div className="flex justify-center items-center w-full h-6 border-0 border-solid bg-black bg-opacity-0">
           <p className="text-base leading-6 text-center text-gray-400">
-            © 2024 QuizCraft. Level up your learning experience.
+            © 2025 VidyaSetu. Level up your learning experience.
           </p>
         </div>
       </div>

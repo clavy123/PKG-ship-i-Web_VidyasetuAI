@@ -50,26 +50,26 @@ export const FeaturesSection = () => {
   ];
 
   return (
-    <section className="flex justify-center items-center px-36 py-20 w-full border-0 border border-solid h-[456px] max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16 max-sm:h-auto">
-      <div className="flex flex-col gap-16 justify-center items-start border-0 border border-solid bg-black bg-opacity-0 h-[296px] w-[1152px] max-md:w-full max-md:max-w-[1000px] max-sm:gap-10 max-sm:h-auto">
-        <div className="flex justify-center items-center w-full h-10 border-0 border border-solid bg-black bg-opacity-0">
-          <h2 className="text-4xl leading-10 text-center bg-clip-text max-sm:text-3xl max-sm:leading-8 text-white">
+    <section className="flex justify-center items-center px-6 py-20 w-full border-0 bg-gradient-to-br from-[#0A0A23] via-[#1a1a40] to-[#23235b] max-sm:px-2 max-sm:py-10">
+      <div className="flex flex-col gap-16 justify-center items-center w-full max-w-[1200px]">
+        <div className="flex justify-center items-center w-full">
+          <h2 className="text-5xl md:text-4xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-center drop-shadow-lg tracking-tight w-full" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             POWER-UPS & FEATURES
           </h2>
         </div>
-        <div className="flex gap-8 justify-center items-start h-48 border-0 border border-solid bg-black bg-opacity-0 w-[1152px] max-md:flex-col max-md:gap-6 max-md:items-center max-md:w-full max-md:h-auto max-sm:gap-5 max-sm:h-auto">
+        <div className="flex gap-10 justify-center items-stretch flex-wrap w-full">
           {features.map((feature, index) => (
             <article
               key={index}
-              className="relative p-6 h-48 rounded-xl border-0 border border-solid shadow-sm w-[363px] max-md:w-full max-md:max-w-[400px] max-sm:p-5 max-sm:h-auto bg-gray-900"
+              className="relative flex flex-col items-center p-8 rounded-2xl border-2 border-gray-800 shadow-xl bg-gray-900/90 w-[340px] min-h-[260px] max-md:w-full max-md:max-w-[400px] mb-6 hover:scale-105 hover:border-lime-400 transition-transform duration-300 group"
             >
-              <div className="flex items-center h-10 border-0 border border-solid bg-black bg-opacity-0 w-[315px]">
-                <div dangerouslySetInnerHTML={{ __html: feature.icon }} />
+              <div className="flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-[#39FF14]/20 via-[#667eea]/20 to-[#ff073a]/20 mb-4 shadow group-hover:shadow-lg">
+                <span dangerouslySetInnerHTML={{ __html: feature.icon }} />
               </div>
-              <h3 className="absolute left-6 text-xl font-bold leading-7 text-white top-[76px] max-sm:static max-sm:mt-4 max-sm:mb-3">
+              <h3 className="text-2xl font-bold text-white mb-2 text-center group-hover:text-lime-400 transition-colors duration-300">
                 {feature.title}
               </h3>
-              <p className="absolute left-6 h-12 text-base leading-6 text-gray-300 top-[118px] w-[292px] max-sm:static max-sm:w-full max-sm:h-auto">
+              <p className="text-base leading-6 text-gray-300 text-center">
                 {feature.description}
               </p>
             </article>

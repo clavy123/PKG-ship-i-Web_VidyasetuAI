@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { ICONS } from "../../assets/icons";
 import {
   DifficultyLevel,
   LanguageType,
@@ -9,8 +10,22 @@ import { FormSelect } from "../../components/FormSelect";
 import { FormInput } from "../../components/FormInput";
 import { FormTextarea } from "../../components/FormTextarea";
 import { FileDropzone } from "../../components/FileDropzone";
+import { useNavigate } from "react-router";
+import {
+  generateQuizFromVideo,
+  generateQuizFromPrompt,
+} from "../../store/slices/quiz.slice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import Loader from "../../components/Loader";
+import Modal from "../../components/Modal";
+import CustomLoader from "../../components/CustomLoader";
 
 export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [quizModalOpen, setQuizModalOpen] = React.useState(false);
+  const { error, loading } = useSelector((state) => state.quiz);
   const {
     handleSubmit,
     control,
@@ -36,7 +51,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
 
   // Helper: map tab to sourceTypeId
   const tabToSourceTypeId = {
-    youtube: SourceType.pdf, // If you want YouTube to be 2, change this accordingly
+    youtube: SourceType.youtube, // If you want YouTube to be 2, change this accordingly
     context: SourceType.context,
     prompt: SourceType.prompt,
     pdf: SourceType.pdf,
@@ -46,8 +61,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   const challengeModeToTypeId = {
     "multiple-choice": 1,
     "fill-in-the-blank": 2,
-    "true-false": 3,
-    "open-text": 4,
+    "true-false": 4,
   };
 
   // Language options
@@ -73,10 +87,10 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   // Tabs
   const tabs = useMemo(
     () => [
-      { id: "youtube", label: "YouTube Video" },
-      { id: "prompt", label: "Prompt" },
-      { id: "context", label: "Context" },
-      { id: "pdf", label: "Upload PDF" },
+      { id: "youtube", label: "YouTube Video", disabled: false },
+      { id: "prompt", label: "Prompt", disabled: false },
+      // { id: "context", label: "Context", disabled: true },
+      { id: "pdf", label: "Upload Files", disabled: true },
     ],
     []
   );
@@ -118,32 +132,17 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         id: "true-false",
         title: "True False",
         description: "Best of both worlds",
-        icon: `<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px; position: absolute; left: 50%; top: 2px; transform: translateX(-50%)">
-        <g clip-path="url(#clip0_7_179)">
-          <path d="M24.3164 2.76559C25.0195 2.47262 25.8223 2.63668 26.3613 3.16989L30.1113 6.91989C30.4629 7.27145 30.6621 7.74606 30.6621 8.24411C30.6621 8.74215 30.4629 9.21676 30.1113 9.56833L26.3613 13.3183C25.8223 13.8574 25.0195 14.0156 24.3164 13.7226C23.6133 13.4297 23.1562 12.75 23.1562 11.9882V10.125H21.2812C20.6895 10.125 20.1328 10.4004 19.7812 10.875L17.2969 14.1855L14.9531 11.0625L16.7812 8.62497C17.8418 7.207 19.5117 6.37497 21.2812 6.37497H23.1562V4.49997C23.1562 3.74411 23.6133 3.05856 24.3164 2.76559ZM10.2656 17.3144L12.6094 20.4375L10.7812 22.875C9.7207 24.2929 8.05078 25.125 6.28125 25.125H2.53125C1.49414 25.125 0.65625 24.2871 0.65625 23.25C0.65625 22.2129 1.49414 21.375 2.53125 21.375H6.28125C6.87305 21.375 7.42969 21.0996 7.78125 20.625L10.2656 17.3144ZM26.3555 28.33C25.8164 28.8691 25.0137 29.0273 24.3105 28.7343C23.6074 28.4414 23.1504 27.7617 23.1504 27V25.125H21.2812C19.5117 25.125 17.8418 24.2929 16.7812 22.875L7.78125 10.875C7.42969 10.4004 6.87305 10.125 6.28125 10.125H2.53125C1.49414 10.125 0.65625 9.28708 0.65625 8.24997C0.65625 7.21286 1.49414 6.37497 2.53125 6.37497H6.28125C8.05078 6.37497 9.7207 7.207 10.7812 8.62497L19.7812 20.625C20.1328 21.0996 20.6895 21.375 21.2812 21.375H23.1562V19.5C23.1562 18.7441 23.6133 18.0586 24.3164 17.7656C25.0195 17.4726 25.8223 17.6367 26.3613 18.1699L30.1113 21.9199C30.4629 22.2715 30.6621 22.7461 30.6621 23.2441C30.6621 23.7422 30.4629 24.2168 30.1113 24.5683L26.3613 28.3183L26.3555 28.33Z" fill="#FF073A"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_7_179">
-            <path d="M0.65625 0.75H30.6562V30.75H0.65625V0.75Z" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>`,
-      },
-      {
-        id: "open-text",
-        title: "Open Text",
-        description: "Free-form responses",
-        icon: `<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px; position: absolute; left: 50%; top: 2px; transform: translateX(-50%)">
-        <g clip-path="url(#clip0_7_186)">
-          <path d="M15.3281 30.75C19.3064 30.75 23.1217 29.1696 25.9347 26.3566C28.7478 23.5436 30.3281 19.7282 30.3281 15.75C30.3281 11.7718 28.7478 7.95644 25.9347 5.1434C23.1217 2.33035 19.3064 0.75 15.3281 0.75C11.3499 0.75 7.53457 2.33035 4.72152 5.1434C1.90848 7.95644 0.328125 11.7718 0.328125 15.75C0.328125 19.7282 1.90848 23.5436 4.72152 26.3566C7.53457 29.1696 11.3499 30.75 15.3281 30.75ZM21.9492 12L14.4492 19L13 17L8.71289 21L10.1621 22L12.4629 20L20.9629 12H21V12Z" fill="#39FF14"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_7_186">
-            <path d="M0.328125 0.75H30.3281V30.75H0.328125V0.75Z" fill="white"/>
-          </clipPath>
-        </defs>
-        </svg>
-        `,
+        icon: `<svg width="60" height="32" viewBox="0 0 60 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 56px; height: 30px; position: absolute; left: 50%; top: 2px; transform: translateX(-50%)">
+          <g>
+            <circle cx="16" cy="16" r="15" stroke="#667eea" stroke-width="2" fill="#fff"/>
+            <path d="M10 16.5L14 20.5L22 12.5" stroke="#39FF14" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <g>
+            <circle cx="44" cy="16" r="15" stroke="#667eea" stroke-width="2" fill="#fff"/>
+            <path d="M37 23L51 9" stroke="#FF073A" stroke-width="3" stroke-linecap="round"/>
+            <path d="M37 9L51 23" stroke="#FF073A" stroke-width="3" stroke-linecap="round"/>
+          </g>
+        </svg>`,
       },
     ],
     []
@@ -185,10 +184,12 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
           name="prompt"
           control={control}
           label="Prompt"
-          placeholder="Enter your prompt..."
+          placeholder="What is probability?"
+          minLength={15}
           maxLength={50}
           rules={{
             required: "Prompt is required",
+            minLength: { value: 15, message: "Minimum 15 characters required" },
             maxLength: { value: 50, message: "Maximum 50 characters allowed" },
           }}
           rows={2}
@@ -219,26 +220,16 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
         name="youtube"
         control={control}
         type="url"
-        label="YouTube Video Link"
+        label="YouTube Video Link (Please select a video under 10 minutes)"
         placeholder="https://www.youtube.com/watch?v=..."
         rules={{ required: "YouTube link is required" }}
       />
     );
   };
 
-  // Device token helper
-  const getDeviceToken = () => {
-    let token = localStorage.getItem("deviceToken");
-    if (!token) {
-      token = Math.floor(Math.random() * 1e12).toString();
-      localStorage.setItem("deviceToken", token);
-    }
-    return token;
-  };
-
   // Main submit handler
-  const onSubmit = (data) => {
-    const deviceId = getDeviceToken();
+  const onSubmit = async (data) => {
+    const deviceId = localStorage.getItem("deviceId");
     const questionsTypeId = challengeModeToTypeId[data.challengeMode];
     const difficultyTypeId = Number(data.difficulty);
     const languageId = Number(data.languageType);
@@ -268,16 +259,87 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
 
       if (activeTab === "youtube") {
         payload.videoUrl = data.youtube;
+        const resultAction = await dispatch(generateQuizFromVideo(payload));
+
+        if (generateQuizFromVideo.rejected.match(resultAction)) {
+          const errorMsg = resultAction.payload || "Quiz generation failed";
+
+          if (
+            errorMsg ===
+            "Found existing questionnaire and regenerated successfully"
+          ) {
+            setQuizModalOpen(true);
+          } else {
+            toast.error(errorMsg);
+          }
+          return;
+        }
+
+        if (generateQuizFromVideo.fulfilled.match(resultAction)) {
+          const { statusCode, message, data } = resultAction.payload;
+
+          if (statusCode === 200) {
+            if (data?.questionnaireResponseModel?.questions?.length) {
+              toast.success("Quiz generated successfully!");
+              navigate("/mcqs");
+              localStorage.removeItem("quiz_selected_options");
+              localStorage.removeItem("quizData");
+            } else {
+              toast.error("Irrelevant prompt");
+            }
+          } else {
+            toast.error(message || "Quiz generation failed");
+          }
+        }
       } else if (activeTab === "context") {
         payload.context = data.context;
       } else if (activeTab === "prompt") {
         payload.prompt = data.prompt;
-      }
+        const resultAction = await dispatch(generateQuizFromPrompt(payload));
+        if (generateQuizFromPrompt.rejected.match(resultAction)) {
+          const errorMsg = resultAction.payload || "Quiz generation failed";
 
-      console.log("JSON payload:", payload);
-      // fetch("/api/quiz", { method: "POST", body: JSON.stringify(payload) });
+          if (
+            errorMsg ===
+            "Found existing questionnaire and regenerated successfully"
+          ) {
+            setQuizModalOpen(true);
+          } else {
+            toast.error(errorMsg);
+          }
+          return;
+        }
+        if (generateQuizFromPrompt.fulfilled.match(resultAction)) {
+          const { statusCode, message, data } = resultAction.payload;
+
+          if (statusCode === 200) {
+            if (data?.questionnaireResponseModel?.questions?.length) {
+              toast.success("Quiz generated successfully!");
+              navigate("/mcqs");
+              localStorage.removeItem("quiz_selected_options");
+              localStorage.removeItem("quizData");
+            } else {
+              toast.error("Irrelevant prompt");
+            }
+          } else {
+            toast.error(message || "Quiz generation failed");
+          }
+        }
+      }
     }
   };
+
+  const closeQuizModal = useCallback(() => {
+    setQuizModalOpen(false);
+  }, []);
+
+  // const generateNewQuiz = useCallback(() => {
+  //   closeQuizModal();
+  //   toast.success("Quiz generated successfully!");
+  //   navigate("/mcqs");
+  //   localStorage.removeItem("quiz_selected_options");
+  //   localStorage.removeItem("quizData");
+  // }, [closeQuizModal, navigate]);
 
   if (!isTitleDisplay) {
     return (
@@ -300,6 +362,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                         : "bg-gray-900 text-gray-300"
                     }`}
                     onClick={() => {
+                      if (tab.disabled) return;
                       setValue("activeTab", tab.id);
                       setValue("pdf", "");
                       setValue("youtube", "");
@@ -329,7 +392,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               rules={{
                 required: "Number of questions is required",
                 min: { value: 1, message: "At least 1 question required" },
-                max: { value: 50, message: "Maximum 50 questions allowed" },
+                max: { value: 10, message: "Maximum 10 questions allowed" },
               }}
             />
 
@@ -341,7 +404,10 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               render={({ field }) => (
                 <div className="flex flex-col gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full">
                   <label className="flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0">
-                    <span className="text-lg font-bold text-lime-500">
+                    <span
+                      className={`text-lg font-bold text-lime-500 transition-all duration-200`}
+                      id="challenge-mode-label-text"
+                    >
                       Choose Your Challenge Mode
                     </span>
                   </label>
@@ -350,9 +416,11 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                       const isSelected = field.value === mode.id;
                       return (
                         <div
-                          className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 ${
-                            isSelected ? "border-indigo-500" : "border-gray-600"
-                          } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full`}
+                          className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 transition-all duration-200 ${
+                            isSelected
+                              ? "border-indigo-500 scale-105 shadow-lg"
+                              : "border-gray-600 hover:border-lime-400 hover:scale-105 hover:shadow-xl"
+                          } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full group/challenge-card`}
                           onClick={() => field.onChange(mode.id)}
                           key={mode.id}
                         >
@@ -388,6 +456,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                 label="Select Language"
                 options={languageTypeOptions}
                 rules={{ required: "Language is required" }}
+                disabled
               />
               <FormSelect
                 name="difficulty"
@@ -416,12 +485,23 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
   }
 
   return (
-    <section className="flex justify-center items-center px-72 py-20 w-full border-0 border-solid bg-opacity-0 max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16">
-      <div className="flex flex-col gap-12 justify-center items-start border-0 border-solid bg-opacity-0 w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8">
-        <div className="border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full">
-          <h2 className="mx-auto my-0 -mt-2 text-4xl leading-10 text-center bg-clip-text w-[572px] max-md:w-full max-md:text-3xl max-sm:text-2xl max-sm:leading-7 text-white">
+    <section className="flex justify-center items-center px-72 py-20 w-full border-0 border-solid bg-black bg-opacity-0 max-md:px-10 max-md:py-20 max-sm:px-5 max-sm:py-16">
+      <div className="flex flex-col gap-12 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full max-md:max-w-[800px] max-sm:gap-8">
+        <div className="border-0 border-solid bg-black bg-opacity-0 w-[896px] max-md:w-full flex flex-col items-center">
+          <h2
+            className="mx-auto my-0 -mt-2 text-5xl md:text-4xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] text-center drop-shadow-lg tracking-tight w-full"
+            style={{
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
             CREATE YOUR CHALLENGE
           </h2>
+          <p className="mx-auto my-0 mt-8 text-2xl md:text-xl sm:text-lg font-semibold text-center text-white/90 w-[686px] max-md:w-full max-sm:mt-5 max-sm:text-base max-sm:leading-6 drop-shadow">
+            Drop a <span className="text-lime-400 font-bold">YouTube link</span>{" "}
+            and let <span className="text-indigo-400 font-bold">AI</span> craft
+            your personalized quiz adventure!
+          </p>
         </div>
 
         <div className="w-full flex justify-center bg-gradient-to-r from-[#1a1a2e] to-[#16213e]">
@@ -438,11 +518,15 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                       key={tab.id}
                       type="button"
                       className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+                        tab.disabled && "cursor-not-allowed"
+                      } ${
                         activeTab === tab.id
                           ? "bg-gradient-to-r from-[#ff073a] to-[#667eea] text-white"
                           : "bg-gray-900 text-gray-300"
                       }`}
+                      title={tab.disabled ? "Coming Soon" : ""}
                       onClick={() => {
+                        if (tab.disabled) return;
                         setValue("activeTab", tab.id);
                         setValue("pdf", "");
                         setValue("youtube", "");
@@ -472,7 +556,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                 rules={{
                   required: "Number of questions is required",
                   min: { value: 1, message: "At least 1 question required" },
-                  max: { value: 50, message: "Maximum 50 questions allowed" },
+                  max: { value: 10, message: "Maximum 10 questions allowed" },
                 }}
               />
 
@@ -483,23 +567,56 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                 rules={{ required: "Challenge mode is required" }}
                 render={({ field }) => (
                   <div className="flex flex-col gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full">
-                    <label className="flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0">
-                      <span className="text-lg font-bold text-lime-500">
+                    {/* Challenge Mode Label with hover effect */}
+                    <label
+                      className={`flex gap-2 items-center border-0 border-solid bg-black bg-opacity-0 transition-all duration-200 ${
+                        field.value && field.value !== "" ? "" : ""
+                      }`}
+                      id="challenge-mode-label"
+                    >
+                      <span
+                        className="text-lg font-bold text-lime-500 transition-all duration-200"
+                        id="challenge-mode-label-text"
+                      >
                         Choose Your Challenge Mode
                       </span>
                     </label>
-                    <div className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full max-md:flex-col max-md:gap-3">
+                    <div className="flex gap-4 justify-center items-start border-0 border-solid bg-black bg-opacity-0 w-full max-md:flex-col max-md:gap-3 group/challenge-modes">
                       {challengeModes.map((mode) => {
                         const isSelected = field.value === mode.id;
                         return (
                           <div
-                            className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 ${
+                            className={`flex justify-center items-center p-5 bg-gray-900 rounded-lg border-2 transition-all duration-200 ${
                               isSelected
-                                ? "border-indigo-500"
-                                : "border-gray-600"
-                            } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full`}
+                                ? "border-indigo-500 scale-105 shadow-lg"
+                                : "border-gray-600 hover:border-lime-400 hover:scale-105 hover:shadow-xl"
+                            } border-solid cursor-pointer h-[124px] w-[267px] max-md:w-full group/challenge-card`}
                             onClick={() => field.onChange(mode.id)}
                             key={mode.id}
+                            onMouseEnter={() => {
+                              const label = document.getElementById(
+                                "challenge-mode-label-text"
+                              );
+                              if (label) {
+                                label.classList.add(
+                                  "text-lime-300",
+                                  "drop-shadow-glow",
+                                  "scale-105"
+                                );
+                              }
+                            }}
+                            onMouseLeave={() => {
+                              const label = document.getElementById(
+                                "challenge-mode-label-text"
+                              );
+                              if (label) {
+                                label.classList.remove(
+                                  "text-lime-300",
+                                  "drop-shadow-glow",
+                                  "scale-105"
+                                );
+                              }
+                            }}
                           >
                             <div className="relative border-0 border-solid bg-black bg-opacity-0 h-[88px] w-[231px]">
                               <div
@@ -533,6 +650,7 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
                   label="Select Language"
                   options={languageTypeOptions}
                   rules={{ required: "Language is required" }}
+                  disabled
                 />
                 <FormSelect
                   name="difficulty"
@@ -546,10 +664,22 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
               {/* Generate Quiz Button */}
               <div className="flex justify-center items-center border-0 border-solid bg-black bg-opacity-0 w-full">
                 <button
+                  className="flex items-center justify-center gap-3 px-10 py-4 rounded-full text-white text-xl font-extrabold tracking-wide shadow-lg transition-all duration-200 bg-gradient-to-r from-[#ff073a] to-[#667eea]  hover:scale-105 hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-400 w-[329px] max-sm:w-full max-sm:max-w-[280px]"
                   type="submit"
-                  className="flex gap-3 items-center pt-3.5 pr-20 pb-5 pl-16 rounded-full border-0 border-solid shadow-sm cursor-pointer w-[329px] max-sm:w-full max-sm:max-w-[280px] bg-white text-black"
                 >
-                  <span className="text-xl font-bold text-center bg-clip-text">
+                  <ICONS.IconCheckCircle
+                    className="text-black"
+                    style={{ minWidth: 24, minHeight: 24 }}
+                    size={24}
+                    color="#fff"
+                  />
+                  <span
+                    className="bg-clip-text text-transparent bg-gradient-to-r from-[#ff073a] to-[#667eea] font-extrabold text-xl tracking-wide"
+                    style={{
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "white",
+                    }}
+                  >
                     GENERATE QUIZ
                   </span>
                 </button>
@@ -558,6 +688,38 @@ export const CreateChallengeSection = ({ isTitleDisplay = true }) => {
           </form>
         </div>
       </div>
+
+      {loading && <CustomLoader />}
+
+      <Modal open={quizModalOpen} onClose={closeQuizModal}>
+        <button
+          className="absolute top-4 right-4 text-white hover:text-red-400 transition"
+          onClick={closeQuizModal}
+          aria-label="Close"
+        >
+          <ICONS.IconCancel size={24} />
+        </button>
+        <div className="bg-gray-900 rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-md mx-auto">
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 text-center">
+            Are you sure you want to generate the same quiz again?
+          </h3>
+
+          <div className="flex justify-center gap-4 mt-6">
+            {/* <button
+              onClick={closeQuizModal}
+              className="px-6 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-medium transition"
+            >
+              No
+            </button> */}
+            <button
+              onClick={closeQuizModal} // Define this function to trigger the action
+              className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#39FF14] via-[#667eea] to-[#ff073a] hover:opacity-90 text-white font-semibold transition"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </Modal>
     </section>
   );
 };

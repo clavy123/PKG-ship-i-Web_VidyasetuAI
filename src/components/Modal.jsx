@@ -30,13 +30,13 @@ const Modal = ({ open, onClose, children, className = "" }) => {
       <div
         className={`p-8 relative w-full max-w-6xl ${className}`}
       >
-        <button
+        {/* <button
           className="absolute top-8 right-0 text-gray-400 hover:text-white text-2xl font-bold"
           onClick={onClose}
           aria-label="Close"
         >
           &times;
-        </button>
+        </button> */}
         {children}
       </div>
     </div>
